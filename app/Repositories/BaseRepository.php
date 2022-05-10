@@ -21,10 +21,10 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function paginate()
     {
-        return $this->model->paginate(8);
+        return $this->model->paginate(5);
     }
 
-    public function getListById($id)
+    public function find($id)
     {
         return $this->model->findOrFail($id);
     }
@@ -36,14 +36,14 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function update($id, $data)
     {
-        $model = $this->getListById($id);
+        $model = $this->find($id);
 
         return $model->update($data);
     }
 
     public function destroy($id)
     {
-        $models = $this->getListById($id);
+        $models = $this->find($id);
         return $models->delete();
     }
 

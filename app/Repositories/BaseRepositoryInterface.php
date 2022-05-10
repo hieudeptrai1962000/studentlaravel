@@ -5,9 +5,10 @@ namespace App\Repositories;
 interface BaseRepositoryInterface
 {
 
+
     public function getAllList();
 
-    public function getListById($id);
+    public function find($id);
 
     public function store($data);
 
