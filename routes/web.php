@@ -23,3 +23,7 @@ Route::get('/', function () {
 Route::resource('faculty', FacultyController::class);
 Route::resource('student', StudentController::class);
 Route::resource('subject', SubjectController::class);
+Route::get('/addsubject/{id}', [StudentController::class, 'addsubject'])->name('student.subject');
+Route::get('/addmark/{id}', [StudentController::class, 'addmark'])->name('student.mark');
+Route::post('/update', [StudentController::class, 'updatesubject'])->name('student.updatesubject');
+Route::post('/mark', [StudentController::class, 'updatemark'])->name('student.updatemark');

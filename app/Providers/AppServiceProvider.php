@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
-use App\Models\Subject\Subject;
+
 use App\Repositories\Faculty\FacultyRepository;
 use App\Repositories\Faculty\FacultyRepositoryInterface;
 use App\Repositories\Student\StudentRepository;
 use App\Repositories\Student\StudentRepositoryInterface;
+use App\Repositories\Studentsubject\StudentsubjectRepository;
+use App\Repositories\Studentsubject\StudentsubjectRepositoryInterface;
 use App\Repositories\Subject\SubjectRepository;
 use App\Repositories\Subject\SubjectRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(FacultyRepositoryInterface::class,FacultyRepository::class);
         $this->app->singleton(StudentRepositoryInterface::class,StudentRepository::class);
         $this->app->singleton(SubjectRepositoryInterface::class,SubjectRepository::class);
+        $this->app->singleton(StudentsubjectRepositoryInterface::class,StudentsubjectRepository::class);
     }
 
     /**
