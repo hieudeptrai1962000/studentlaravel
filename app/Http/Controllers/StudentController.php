@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StudentRequest;
+use App\Models\StudentSubject\Studentsubject;
 use App\Repositories\Faculty\FacultyRepositoryInterface;
 use App\Repositories\Student\StudentRepositoryInterface;
+use App\Repositories\Studentsubject\StudentsubjectRepositoryInterface;
+use App\Repositories\Subject\SubjectRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -14,14 +17,21 @@ class StudentController extends Controller
 
     protected $studentRepo;
     protected $facultyRepo;
+    protected $subjectRepo;
+    protected $markRepo;
 
     public function __construct(
-        StudentRepositoryInterface $studentRepo,
-        FacultyRepositoryInterface $facultyRepository
+        StudentRepositoryInterface        $studentRepo,
+        FacultyRepositoryInterface        $facultyRepository,
+        SubjectRepositoryInterface        $subjectRepository,
+        StudentsubjectRepositoryInterface $markRepo
+
     )
     {
         $this->studentRepo = $studentRepo;
         $this->facultyRepo = $facultyRepository;
+        $this->subjectRepo = $subjectRepository;
+        $this->markRepo = $markRepo;
     }
 
 
@@ -123,5 +133,40 @@ class StudentController extends Controller
     {
         $this->studentRepo->destroy($id);
         return redirect()->route('student.index')->with('success', 'Successfully!');
+    }
+
+    public function addsubject($id)
+    {
+        $subject = $this->subjectRepo->getAllList();
+        $student = $this->studentRepo->find($id);
+        return view('student.updatesubject', compact('student', 'subject'));
+    }
+
+    public function updatesubject(Request $request)
+    {
+        $student_id = $request->input('student_id');
+        $subject = $request->input('subject_id');
+        $mark = $request->input('mark');
+        foreach ($subject as $s) {
+            $result = new Studentsubject;
+            $result->student_id = $student_id;
+            $result->subject_id = $s;
+            $result->mark = $mark;
+            $result->save();
+        }
+        return redirect()->route('subject.index')->with('success', 'Successfully !');
+    }
+
+    public function addmark($id)
+    {
+        $mark = Studentsubject::where('student_id', $id)->get();
+        return view('student.updatemark', compact('mark'));
+    }
+
+    public function updatemark(Request $request)
+    {
+        $mark_id = $request->input('mark_id');
+        $this->markRepo->find($mark_id)->update($request->all());
+        return redirect()->route('student.index')->with('success', 'Successfully !');
     }
 }

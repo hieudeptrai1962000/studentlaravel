@@ -49,6 +49,7 @@
                                        class="btn" value="Delete">
                             </div>
                         {!! Form::close()  !!}
+
                     </td>
                 </tr>
             @endforeach

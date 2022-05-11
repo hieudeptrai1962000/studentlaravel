@@ -37,7 +37,15 @@
                     <td>{{$studentinfor->full_name}}</td>
                     <td>{{$studentinfor->email}}</td>
                     <td>{{$studentinfor->birthday}}</td>
-                    <td>{{$studentinfor->gender}}</td>
+                    <td>
+                        <?php
+                        if ($studentinfor->gender == 0) {
+                            echo 'Nam';
+                        } else {
+                            echo 'Nữ';
+                        }
+                        ?>
+                    </td>
                     <td>{{$studentinfor->phone_number}}</td>
                     <td><img width="auto" height="150px" src="{{asset(''.$studentinfor->image)}}"></td>
                     <td>{{$studentinfor->faculty_id}}</td>
@@ -52,7 +60,6 @@
                             </div>
 
                             {!! Form::close()  !!}
-                            {!! Form::close()  !!}
                             {{  Form::open(array('route' => array('student.destroy', $studentinfor->id), 'method'=>'post')) }}
                             {{ csrf_field() }}
                             {{ method_field('DELETE') }}
@@ -60,6 +67,22 @@
                                 <input type="submit" onclick="return confirm('Are you sure?')"
                                        class="btn" value="Delete">
                             </div>
+                            {!! Form::close()  !!}
+                            {{  Form::open(array('route' => array('student.subject', $studentinfor->id), 'method'=>'get')) }}
+
+                            <form>
+                                <div class="edit">
+                                    <input type="submit" class="btn" value="Add Subject">
+                                </div>
+
+                                {!! Form::close()  !!}
+                                {{  Form::open(array('route' => array('student.mark', $studentinfor->id), 'method'=>'get')) }}
+
+                                <form>
+                                    <div class="edit">
+                                        <input type="submit" class="btn" value="Add Mark">
+                                    </div>
+
                         {!! Form::close()  !!}
                     </td>
                 </tr>
