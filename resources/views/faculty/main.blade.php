@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-sm-6">
                     <a href="{{route('faculty.create')}}" class="btn btn-success" data-toggle="modal"><i
-                            class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>
+                            class="material-icons">&#xE147;</i> <span>Add New</span></a>
                 </div>
             </div>
         </div>
