@@ -11,6 +11,11 @@ class StudentsubjectRepository extends BaseRepository implements StudentsubjectR
     {
         parent::__construct($studentsubject);
     }
+
+    public function query() {
+        return $this->model->query();
+    }
 }
+
 
 ?>

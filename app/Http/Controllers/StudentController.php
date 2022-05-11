@@ -159,7 +159,7 @@ class StudentController extends Controller
 
     public function addmark($id)
     {
-        $mark = Studentsubject::where('student_id', $id)->get();
+        $mark = $this->markRepo->query()->where('student_id', $id)->get();
         return view('student.updatemark', compact('mark'));
     }
 
