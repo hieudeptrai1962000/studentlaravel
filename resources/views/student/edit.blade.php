@@ -7,11 +7,6 @@
 
 <div class="well">
 
-    {{--    @if(isset($student))--}}
-    {{--        {{  Form::open(array('route' => array('student.update', $student->id), 'method'=>'put','enctype'=>'multipart/form-data'))   }}--}}
-    {{--    @else--}}
-    {{--        {{ Form::open(array('route' => 'student.store','method' => 'post','enctype' => "multipart/form-data")) }}--}}
-    {{--    @endif--}}
     @if(isset($student))
         {!! Form::model($student, ['route' => ['student.update', $student->id], 'method'=>'put', 'enctype'=>'multipart/form-data']) !!}
     @else
