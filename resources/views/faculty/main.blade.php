@@ -30,25 +30,15 @@
                     <td>{{$facultyinfor->id}}</td>
                     <td>{{$facultyinfor->name}}</td>
                     <td>
-                        {{  Form::open(array('route' => array('faculty.edit', $facultyinfor->id), 'method'=>'get')) }}
 
-                        <form>
-                            {{ csrf_field() }}
-                            {{ method_field('GET') }}
-                            <div class="edit">
-                                <input type="submit" class="btn" value="Edit">
-                            </div>
+                        {!! Form::model($facultyinfor, ['route' => ['faculty.destroy', $facultyinfor->id], 'method' => 'DELETE']) !!}
 
-                            {!! Form::close()  !!}
-                            {!! Form::close()  !!}
-                            {{  Form::open(array('route' => array('faculty.destroy', $facultyinfor->id), 'method'=>'post')) }}
-                            {{ csrf_field() }}
-                            {{ method_field('DELETE') }}
-                            <div class="delete">
-                                <input type="submit" onclick="return confirm('Are you sure?')"
-                                       class="btn" value="Delete">
-                            </div>
-                        {!! Form::close()  !!}
+                        <a class="btn btn-primary"
+                           href="{{ route('faculty.edit', $facultyinfor->id) }}">Edit</a>
+
+                        {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
+
+                        {!! Form::close() !!}
 
                     </td>
                 </tr>

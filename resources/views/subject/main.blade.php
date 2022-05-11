@@ -30,25 +30,14 @@
                     <td>{{$s->id}}</td>
                     <td>{{$s->name}}</td>
                     <td>
-                        {{  Form::open(array('route' => array('subject.edit', $s->id), 'method'=>'get')) }}
+                        {!! Form::model($s, ['route' => ['subject.destroy', $s->id], 'method' => 'DELETE']) !!}
 
-                        <form>
-                            {{ csrf_field() }}
-                            {{ method_field('GET') }}
-                            <div class="edit">
-                                <input type="submit" class="btn" value="Edit">
-                            </div>
+                        <a class="btn btn-primary"
+                           href="{{ route('subject.edit', $s->id) }}">Edit</a>
 
-                            {!! Form::close()  !!}
-                            {!! Form::close()  !!}
-                            {{  Form::open(array('route' => array('subject.destroy', $s->id), 'method'=>'post')) }}
-                            {{ csrf_field() }}
-                            {{ method_field('DELETE') }}
-                            <div class="delete">
-                                <input type="submit" onclick="return confirm('Are you sure?')"
-                                       class="btn" value="Delete">
-                            </div>
-                        {!! Form::close()  !!}
+                        {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
+
+                        {!! Form::close() !!}
                     </td>
                 </tr>
             @endforeach

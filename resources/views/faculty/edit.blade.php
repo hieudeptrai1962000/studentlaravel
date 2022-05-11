@@ -7,9 +7,13 @@
 
 
 <div class="well">
+    @if(isset($faculty))
+        {!! Form::model($faculty, ['route' => ['faculty.update', $faculty->id], 'method'=>'put']) !!}
 
-    {{  Form::open(array('route' => array('faculty.update', $faculty->id), 'method'=>'put')) }}
-
+    @else
+        {{--        {!! Form::model(['route' => ['faculty.store'], 'method'=>'post']) !!}--}}
+        {{ Form::open(array('route' => 'faculty.store','method' => 'post')) }}
+    @endif
     <fieldset>
 
         <legend>UPDATE</legend>
@@ -27,13 +31,13 @@
         <div class="form-group" style="display: none">
             {!! Form::label('id', 'ID:', ['class' => 'col-lg-2 control-label']) !!}
             <div class="col-lg-10">
-                {!! Form::text('id', $faculty->id, ['class' => 'form-control',]) !!}
+                {!! Form::text('id', isset( $faculty->id) ? $faculty->id : '', ['class' => 'form-control',]) !!}
             </div>
         </div>
         <div class="form-group">
             {!! Form::label('name', 'Faculty:', ['class' => 'col-lg-2 control-label']) !!}
             <div class="col-lg-10">
-                {!! Form::text('name', $faculty->name, ['class' => 'form-control']) !!}
+                {!! Form::text('name', isset( $faculty->name) ? $faculty->name : '', ['class' => 'form-control']) !!}
             </div>
         </div>
 

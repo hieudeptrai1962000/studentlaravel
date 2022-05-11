@@ -7,8 +7,17 @@
 
 <div class="well">
 
-    {{  Form::open(array('route' => array('student.update', $student->id), 'method'=>'put','enctype'=>'multipart/form-data'))   }}
-
+    {{--    @if(isset($student))--}}
+    {{--        {{  Form::open(array('route' => array('student.update', $student->id), 'method'=>'put','enctype'=>'multipart/form-data'))   }}--}}
+    {{--    @else--}}
+    {{--        {{ Form::open(array('route' => 'student.store','method' => 'post','enctype' => "multipart/form-data")) }}--}}
+    {{--    @endif--}}
+    @if(isset($student))
+        {!! Form::model($student, ['route' => ['student.update', $student->id], 'method'=>'put', 'enctype'=>'multipart/form-data']) !!}
+    @else
+        {{--            {!! Form::model(['route' => ['student.store'], 'method' => 'post','enctype' => "multipart/form-data"]) !!}--}}
+        {{ Form::open(array('route' => 'student.store','method' => 'post','enctype' => "multipart/form-data")) }}
+    @endif
     <fieldset>
 
         <legend>CREATE</legend>
@@ -26,19 +35,19 @@
         <div class="form-group">
             {!! Form::label('full_name', 'Full Name:', ['class' => 'col-lg-2 control-label']) !!}
             <div class="col-lg-10">
-                {!! Form::text('full_name', $student->full_name, ['class' => 'form-control', 'placeholder' => 'Khoa']) !!}
+                {!! Form::text('full_name', isset($student->full_name) ? $student->full_name : '', ['class' => 'form-control', 'placeholder' => 'Khoa']) !!}
             </div>
         </div>
         <div class="form-group">
             {!! Form::label('email', 'Email:', ['class' => 'col-lg-2 control-label']) !!}
             <div class="col-lg-10">
-                {!! Form::text('email', $student->email, ['class' => 'form-control', 'placeholder' => 'Khoa']) !!}
+                {!! Form::text('email', isset($student->email) ? $student->email : '', ['class' => 'form-control', 'placeholder' => 'Khoa']) !!}
             </div>
         </div>
         <div class="form-group">
             {!! Form::label('birthday', 'Birthday:', ['class' => 'col-lg-2 control-label']) !!}
             <div class="col-lg-10">
-                {!! Form::date('birthday', $student->birthday, ['class' => 'form-control', 'placeholder' => 'Khoa']) !!}
+                {!! Form::date('birthday', isset($student->birthday) ? $student->birthday : '', ['class' => 'form-control', 'placeholder' => 'Khoa']) !!}
             </div>
         </div>
         <div class="form-group">
@@ -55,7 +64,7 @@
         <div class="form-group">
             {!! Form::label('phone_number', 'Phone Number:', ['class' => 'col-lg-2 control-label']) !!}
             <div class="col-lg-10">
-                {!! Form::text('phone_number', $student->phone_number, ['class' => 'form-control', 'placeholder' => 'Khoa']) !!}
+                {!! Form::text('phone_number', isset($student->phone_number) ? $student->phone_number : '', ['class' => 'form-control', 'placeholder' => 'Khoa']) !!}
             </div>
         </div>
         <div class="form-group">
