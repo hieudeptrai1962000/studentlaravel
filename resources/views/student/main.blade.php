@@ -50,39 +50,14 @@
                     <td><img width="auto" height="150px" src="{{asset(''.$studentinfor->image)}}"></td>
                     <td>{{$studentinfor->faculty_id}}</td>
                     <td>
-                        {{  Form::open(array('route' => array('student.edit', $studentinfor->id), 'method'=>'get')) }}
-
-                        <form>
-                            {{ csrf_field() }}
-                            {{ method_field('GET') }}
-                            <div class="edit">
-                                <input type="submit" class="btn" value="Edit">
-                            </div>
-
-                            {!! Form::close()  !!}
-                            {{  Form::open(array('route' => array('student.destroy', $studentinfor->id), 'method'=>'post')) }}
-                            {{ csrf_field() }}
-                            {{ method_field('DELETE') }}
-                            <div class="delete">
-                                <input type="submit" onclick="return confirm('Are you sure?')"
-                                       class="btn" value="Delete">
-                            </div>
-                            {!! Form::close()  !!}
-                            {{  Form::open(array('route' => array('student.subject', $studentinfor->id), 'method'=>'get')) }}
-
-                            <form>
-                                <div class="edit">
-                                    <input type="submit" class="btn" value="Add Subject">
-                                </div>
-
-                                {!! Form::close()  !!}
-                                {{  Form::open(array('route' => array('student.mark', $studentinfor->id), 'method'=>'get')) }}
-
-                                <form>
-                                    <div class="edit">
-                                        <input type="submit" class="btn" value="Add Mark">
-                                    </div>
-
+                        {!! Form::model($studentinfor, ['route' => ['student.destroy', $studentinfor->id], 'method' => 'DELETE']) !!}
+                        <a class="btn btn-primary"
+                           href="{{ route('student.edit', $studentinfor->id) }}">Edit</a>
+                        <a class="btn btn-primary"
+                           href="{{ route('student.subject', $studentinfor->id) }}">Add Subject</a>
+                        <a class="btn btn-primary"
+                           href="{{ route('student.mark', $studentinfor->id) }}">Add Mark</a>
+                        {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
                         {!! Form::close()  !!}
                     </td>
                 </tr>

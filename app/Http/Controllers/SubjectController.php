@@ -48,7 +48,7 @@ class SubjectController extends Controller
      */
     public function create()
     {
-        return view('subject.create');
+        return view('subject.edit');
     }
 
     /**

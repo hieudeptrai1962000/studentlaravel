@@ -75,7 +75,7 @@ class StudentController extends Controller
     public function create()
     {
         $faculty = $this->facultyRepo->getAllList();
-        return view('student.create', compact('faculty'));
+        return view('student.edit', compact('faculty'));
     }
 
     /**

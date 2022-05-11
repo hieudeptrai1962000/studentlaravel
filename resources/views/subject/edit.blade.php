@@ -8,7 +8,17 @@
 
 <div class="well">
 
-    {{  Form::open(array('route' => array('subject.update', $subject->id), 'method'=>'put')) }}
+    @if(isset($subject))
+        {{  Form::open(array('route' => array('subject.update', $subject->id), 'method'=>'put')) }}
+    @else
+        {{ Form::open(array('route' => 'subject.store','method' => 'post')) }}
+    @endif
+    @if(isset($subject))
+        {!! Form::model($subject, ['route' => ['subject.update', $subject->id], 'method'=>'put', 'enctype'=>'multipart/form-data']) !!}
+    @else
+        {{--            {!! Form::model(['route' => ['subject.store'], 'method' => 'post','enctype' => "multipart/form-data"]) !!}--}}
+        {{ Form::open(array('route' => 'subject.store','method' => 'post','enctype' => "multipart/form-data")) }}
+    @endif
 
     <fieldset>
 
@@ -27,13 +37,13 @@
         <div class="form-group" style="display: none">
             {!! Form::label('id', 'ID:', ['class' => 'col-lg-2 control-label']) !!}
             <div class="col-lg-10">
-                {!! Form::text('id', $subject->id, ['class' => 'form-control',]) !!}
+                {!! Form::text('id', isset($subject->id) ? $subject->id : '', ['class' => 'form-control',]) !!}
             </div>
         </div>
         <div class="form-group">
             {!! Form::label('name', 'Subject:', ['class' => 'col-lg-2 control-label']) !!}
             <div class="col-lg-10">
-                {!! Form::text('name', $subject->name, ['class' => 'form-control']) !!}
+                {!! Form::text('name',isset($subject->name) ? $subject->name : '', ['class' => 'form-control']) !!}
             </div>
         </div>
 
