@@ -18,7 +18,7 @@
             <tr>
                 <th>
                 </th>
-                <th>ID</th>
+                <th>STT</th>
                 <th>NAME</th>
                 <th>EMAIL</th>
                 <th>BIRTHDAY</th>
@@ -33,7 +33,7 @@
                 <tr>
                     <td>
                     </td>
-                    <td>{{$studentinfor->id}}</td>
+                    <td>{{++$i}}</td>
                     <td>{{$studentinfor->full_name}}</td>
                     <td>{{$studentinfor->email}}</td>
                     <td>{{$studentinfor->birthday}}</td>

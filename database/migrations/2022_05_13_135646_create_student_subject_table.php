@@ -14,9 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('student_subject', function (Blueprint $table) {
-            $table->integer('id')->unsigned()->primary()->autoIncrement();
-            $table->integer('student_id')->unsigned();
-            $table->integer('subject_id')->unsigned();
+            $table->id();
+            $table->bigInteger('student_id')->unsigned();
+            $table->bigInteger('subject_id')->unsigned();
             $table->float('mark');
             $table->foreign('student_id')->references('id')->on('students');
             $table->foreign('subject_id')->references('id')->on('subjects');

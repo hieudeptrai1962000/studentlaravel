@@ -18,7 +18,7 @@
             <tr>
                 <th>
                 </th>
-                <th>ID</th>
+                <th>STT</th>
                 <th>NAME</th>
             </tr>
             </thead>
@@ -27,7 +27,7 @@
                 <tr>
                     <td>
                     </td>
-                    <td>{{$facultyinfor->id}}</td>
+                    <td>{{++$i}}</td>
                     <td>{{$facultyinfor->name}}</td>
                     <td>
 

@@ -24,7 +24,7 @@ class FacultyController extends Controller
     public function index()
     {
         $faculty = $this->facultyRepo->paginate();
-        return view('faculty.main', compact('faculty'));
+        return view('faculty.main', compact('faculty'))->with('i');
     }
 
     /**

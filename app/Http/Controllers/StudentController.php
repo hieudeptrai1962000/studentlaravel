@@ -43,7 +43,7 @@ class StudentController extends Controller
     public function index()
     {
         $student = $this->studentRepo->paginate();
-        return view('student.main', compact('student'));
+        return view('student.main', compact('student'))->with('i');
     }
 
     /**
@@ -58,13 +58,15 @@ class StudentController extends Controller
         $data = $request->all();
         if ($request->has('image')) {
             $file = $request->file('image');
-            $destinationPath = 'uploads';
-            $file_name = $file->move($destinationPath, $file->getClientOriginalName());
+            $file_name = $file->move('uploads', $file->getClientOriginalExtension());
+//            dd($file_name);
 
         }
         $data['image'] = $file_name;
         $this->studentRepo->store($data);
         return redirect()->route('student.index')->with('success', 'Successful!');
+
+
     }
 
     /**
@@ -154,7 +156,7 @@ class StudentController extends Controller
             $result->mark = $mark;
             $result->save();
         }
-        return redirect()->route('subject.index')->with('success', 'Successfully !');
+        return redirect()->route('student.index')->with('success', 'Successfully !');
     }
 
     public function addmark($id)
