@@ -58,7 +58,7 @@ class StudentController extends Controller
         $data = $request->all();
         if ($request->has('image')) {
             $file = $request->file('image');
-            $file_name = $file->move('uploads', $file->getClientOriginalExtension());
+            $file_name = $file->move('uploads', $file->getClientOriginalName());
 //            dd($file_name);
 
         }
