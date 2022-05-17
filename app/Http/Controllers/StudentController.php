@@ -150,25 +150,34 @@ class StudentController extends Controller
         $subject = $request->input('subject_id');
         $mark = $request->input('mark');
         foreach ($subject as $s) {
-            $result = new Studentsubject;
-            $result->student_id = $student_id;
-            $result->subject_id = $s;
-            $result->mark = $mark;
-            $result->save();
+            $this->markRepo->store([
+                'student_id'     => $student_id,
+                'subject_id'     => $s,
+                'mark' => $mark,
+            ]);
         }
+
+
         return redirect()->route('student.index')->with('success', 'Successfully !');
     }
 
     public function addmark($id)
     {
-        $mark = $this->markRepo->query()->where('student_id', $id)->get();
-        return view('student.updatemark', compact('mark'));
+        $mark = $this->studentRepo->find($id)->mark;
+        $name = $this->subjectRepo->getAllList();
+        return view('student.updatemark', compact('mark','name'));
     }
 
     public function updatemark(Request $request)
     {
+
         $mark_id = $request->input('mark_id');
-        $this->markRepo->find($mark_id)->update($request->all());
+        $mark = $request->input('mark');
+        foreach ($mark_id as $index => $value)
+        {
+                $this->markRepo->query()->where('id',$mark_id[$index])->update(array('mark' => $mark[$index]));
+        }
+
         return redirect()->route('student.index')->with('success', 'Successfully !');
     }
 }
