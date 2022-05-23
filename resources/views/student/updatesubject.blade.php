@@ -33,7 +33,7 @@
             <div class="col-lg-10">
                 @foreach($subject as $su)
                     <input type="checkbox" name="subject_id[]" value="{{ $su->id }}">
-                    <label>{{ $su->id }}</label><br/><br/>
+                    <label>{{ $su->name }}</label><br/><br/>
                 @endforeach
             </div>
         </div>

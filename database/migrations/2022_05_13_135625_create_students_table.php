@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('full_name', 50);
             $table->string('email',50);
-            $table->dateTime('birthday')->nullable();
+            $table->date('birthday')->nullable();
             $table->tinyInteger('gender')->nullable();
             $table->char('phone_number',20)->nullable();
             $table->string('image',255)->nullable();
