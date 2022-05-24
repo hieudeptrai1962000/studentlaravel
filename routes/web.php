@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgeController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
@@ -27,3 +28,7 @@ Route::get('/addsubject/{id}', [StudentController::class, 'addsubject'])->name('
 Route::get('/addmark/{id}', [StudentController::class, 'addmark'])->name('student.mark');
 Route::post('/update', [StudentController::class, 'updatesubject'])->name('student.updatesubject');
 Route::post('/mark', [StudentController::class, 'updatemark'])->name('student.updatemark');
+//Route::get('save', function(){
+//    $user = \App\Models\Student\Student::find(3);
+//    $user->stu()->sync([1,2]);
+//});
