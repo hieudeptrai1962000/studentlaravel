@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StudentRequest;
-use App\Models\StudentSubject\Studentsubject;
 use App\Repositories\Faculty\FacultyRepositoryInterface;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\Studentsubject\StudentsubjectRepositoryInterface;
@@ -147,36 +146,33 @@ class StudentController extends Controller
     public function updatesubject(Request $request)
     {
         $student_id = $request->input('student_id');
-        $subject = $request->input('subject_id');
-        $mark = $request->input('mark');
-        foreach ($subject as $s) {
-            $this->markRepo->store([
-                'student_id'     => $student_id,
-                'subject_id'     => $s,
-                'mark' => $mark,
-            ]);
-        }
-
+        $this->studentRepo->find($student_id)->stu()->syncWithoutDetaching($request->subject_id);
 
         return redirect()->route('student.index')->with('success', 'Successfully !');
     }
 
     public function addmark($id)
     {
-        $mark = $this->studentRepo->find($id)->mark;
-        $name = $this->subjectRepo->getAllList();
-        return view('student.updatemark', compact('mark','name'));
+        $mark = $this->studentRepo->find($id)->stu;
+        return view('student.updatemark', compact('mark'));
     }
 
     public function updatemark(Request $request)
     {
+        $data = [];
 
-        $mark_id = $request->input('mark_id');
-        $mark = $request->input('mark');
-        foreach ($mark_id as $index => $value)
-        {
-                $this->markRepo->query()->where('id',$mark_id[$index])->update(array('mark' => $mark[$index]));
+        foreach ($request->subject_id as $elden => $value) {
+            array_push($data, [
+                'subject_id' => $request->subject_id[$elden],
+                'mark' => $request->mark[$elden],
+            ]);
         }
+
+        $marks = [];
+        foreach ($data as $key => $value) {
+            $marks[$value['subject_id']] = ['mark' => $value['mark']];
+        }
+        $this->studentRepo->find($request->student_id)->stu()->sync($marks);
 
         return redirect()->route('student.index')->with('success', 'Successfully !');
     }

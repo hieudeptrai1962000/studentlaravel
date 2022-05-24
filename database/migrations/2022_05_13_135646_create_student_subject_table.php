@@ -14,10 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('student_subject', function (Blueprint $table) {
-            $table->id();
             $table->bigInteger('student_id')->unsigned();
             $table->bigInteger('subject_id')->unsigned();
-            $table->float('mark');
+            $table->float('mark')->default('0');
             $table->foreign('student_id')->references('id')->on('students');
             $table->foreign('subject_id')->references('id')->on('subjects');
             $table->timestamps();

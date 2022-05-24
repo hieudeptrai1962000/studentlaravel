@@ -26,10 +26,13 @@
 
                 <tr>
 
+                    @foreach($mark as $m)
+                        <input type="text"  name="student_id" style="display: none" value="{{ $m->pivot->student_id }}">
+                    @endforeach
                     <td>
-                        <select class="form-select" name="mark_id[]" aria-label="Default select example">
+                        <select class="form-select" name="subject_id[]" aria-label="Default select example">
                             @foreach($mark as $m)
-                                <option value="{{ $m->id }}" {{$m->id  ?'selected' : ''}}>{{ $m->subject_id }}</option>
+                                <option value="{{ $m->pivot->subject_id}}" {{$m->pivot->subject_id  ?'selected' : ''}}>{{ $m->name }}</option>
                             @endforeach
                         </select>
                     </td>
@@ -43,9 +46,9 @@
 
                 <tr class="addform"  style="display: none">
                     <td>
-                        <select class="form-select" name="mark_id[]" aria-label="Default select example">
+                        <select class="form-select" name="subject_id[]" aria-label="Default select example">
                             @foreach($mark as $m)
-                                <option value="{{ $m->id }}">{{ $m->subject_id }}</option>
+                                <option value="{{ $m->pivot->subject_id }}">{{ $m->name}}</option>
                             @endforeach
                         </select>
                     </td>
