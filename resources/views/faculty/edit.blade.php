@@ -1,4 +1,6 @@
+@extends('adminlte::page')
 @extends('layouts.header')
+@section('content')
 <div class="container">
     <div class="row">
         <div class="col-lg-8"> @yield('content') </div>
@@ -8,11 +10,10 @@
 
 <div class="well">
     @if(isset($faculty))
-        {!! Form::model($faculty, ['route' => ['faculty.update', $faculty->id], 'method'=>'put']) !!}
+        {!! Form::model($faculty, ['route' => ['faculties.update', $faculty->id], 'method'=>'put']) !!}
 
     @else
-        {{--        {!! Form::model(['route' => ['faculty.store'], 'method'=>'post']) !!}--}}
-        {{ Form::open(array('route' => 'faculty.store','method' => 'post')) }}
+        {{ Form::open(array('route' => 'faculties.store','method' => 'post')) }}
     @endif
     <fieldset>
 
@@ -47,5 +48,6 @@
     {{Form::submit('Submit', array('class' => 'btn btn-success mt-2'))}}
 
     {!! Form::close()  !!}
-    <a href="{{route('faculty.index')}}" class="btn btn-success btn-add">Back</a>
+    <a href="{{route('faculties.index')}}" class="btn btn-success btn-add">Back</a>
 </div>
+@endsection

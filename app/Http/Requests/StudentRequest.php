@@ -26,13 +26,12 @@ class StudentRequest extends FormRequest
     {
         return [
             'full_name' => 'required',
-            'email' => ['required',
-                Rule::unique('students')->ignore($this->student),
-            ],
+//            'email' => ['required',
+//                Rule::unique('students')->ignore($this->student),
+//            ],
             'birthday' => 'required',
             'gender' => 'required',
             'phone_number' => 'required',
-            'faculty_id' => 'required',
         ];
     }
 }

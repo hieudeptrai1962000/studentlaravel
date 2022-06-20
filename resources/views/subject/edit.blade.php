@@ -1,22 +1,18 @@
-
-<div class="container">
-    <div class="row">
-        <div class="col-lg-8"> @yield('content') </div>
+@extends('adminlte::page')
+@extends('layouts.header')
+@section('content')
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8"> @yield('content') </div>
+        </div>
     </div>
-</div>
 
 
-<div class="well">
+    <div class="well">
 
-    @if(isset($subject))
-        {{  Form::open(array('route' => array('subject.update', $subject->id), 'method'=>'put')) }}
-    @else
-        {{ Form::open(array('route' => 'subject.store','method' => 'post')) }}
-    @endif
-    @if(isset($subject))
+        @if(isset($subject))
         {!! Form::model($subject, ['route' => ['subject.update', $subject->id], 'method'=>'put', 'enctype'=>'multipart/form-data']) !!}
     @else
-        {{--            {!! Form::model(['route' => ['subject.store'], 'method' => 'post','enctype' => "multipart/form-data"]) !!}--}}
         {{ Form::open(array('route' => 'subject.store','method' => 'post','enctype' => "multipart/form-data")) }}
     @endif
 
@@ -55,3 +51,4 @@
     {!! Form::close()  !!}
     <a href="{{route('subject.index')}}" class="btn btn-success btn-add">Back</a>
 </div>
+@endsection

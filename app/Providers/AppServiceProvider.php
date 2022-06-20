@@ -11,6 +11,8 @@ use App\Repositories\Studentsubject\StudentsubjectRepository;
 use App\Repositories\Studentsubject\StudentsubjectRepositoryInterface;
 use App\Repositories\Subject\SubjectRepository;
 use App\Repositories\Subject\SubjectRepositoryInterface;
+use App\Repositories\Users\UsersRepository;
+use App\Repositories\Users\UsersRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(StudentRepositoryInterface::class,StudentRepository::class);
         $this->app->singleton(SubjectRepositoryInterface::class,SubjectRepository::class);
         $this->app->singleton(StudentsubjectRepositoryInterface::class,StudentsubjectRepository::class);
+        $this->app->singleton(UsersRepositoryInterface::class,UsersRepository::class);
     }
 
     /**
