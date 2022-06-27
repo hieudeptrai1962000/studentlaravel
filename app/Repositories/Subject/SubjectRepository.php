@@ -11,6 +11,7 @@ class SubjectRepository extends BaseRepository implements SubjectRepositoryInter
     {
         parent::__construct($subject);
     }
+
 }
 
 ?>

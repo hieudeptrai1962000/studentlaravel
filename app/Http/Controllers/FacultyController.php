@@ -23,8 +23,8 @@ class FacultyController extends Controller
 
     public function index()
     {
-        $faculty = $this->facultyRepo->paginate();
-        return view('faculty.main', compact('faculty'))->with('i');
+        $faculties = $this->facultyRepo->paginate();
+        return view('faculty.index', compact('faculties'))->with('i');
     }
 
     /**
@@ -46,7 +46,7 @@ class FacultyController extends Controller
     public function store(FacultyRequest $request)
     {
         $this->facultyRepo->store($request->all());
-        return redirect()->route('faculty.index')->with('success', 'Successfully !');
+        return redirect()->route('faculties.index')->with('success', 'Successfully !');
 
     }
 
@@ -84,10 +84,10 @@ class FacultyController extends Controller
     public function update(FacultyRequest $request, $id)
     {
         if ($request->name == $this->facultyRepo->find($id)->name) {
-            return redirect()->route('faculty.index')->with('warning', 'Nothing change dude !!!');
+            return redirect()->route('faculties.index')->with('warning', 'Nothing change dude !!!');
         } else {
             $this->facultyRepo->find($id)->update($request->all());
-            return redirect()->route('faculty.index')->with('success', 'Update faculty successfully !');
+            return redirect()->route('faculties.index')->with('success', 'Update faculty successfully !');
         }
     }
 
@@ -100,6 +100,6 @@ class FacultyController extends Controller
     public function destroy($id)
     {
         $this->facultyRepo->destroy($id);
-        return redirect()->route('faculty.index')->with('success', 'Successfully!');
+        return redirect()->route('faculties.index')->with('success', 'Successfully!');
     }
 }

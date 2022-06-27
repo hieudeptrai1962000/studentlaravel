@@ -4,11 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap User Management Data Table</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -203,6 +198,29 @@
             });
 
         });
+
+        $(document).on('click','select',function () {
+            var $select = $("select");
+            var selected = [];
+            $.each($select, function (index, select) {
+                if (select.value !== "") {
+                    selected.push(select.value);
+                }
+            });
+            $('select > option').not(this).css('display','block');
+            $("option").prop("disabled", false);
+            for (var index in selected) {
+                $('option[value="' + selected[index] +'"]').css("display","none");
+            }
+            $(this).parent().parent().find('td > i.remove-item').on('click',function () {
+                var del =  $(this).val();
+                selected.splice(selected.indexOf(del.toString()),1);
+                for (var index in selected) {
+                    $('option[value="' + selected[index] +'"]').css("display","block");
+                }
+            });
+        });
+
         $('#saveform').on('click',function () {
             $('tr.addform').remove();
         });

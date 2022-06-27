@@ -2,43 +2,56 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Student\Student;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Cviebrock\EloquentSluggable\Sluggable;
 
-class User extends Authenticatable
+class   User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
-
+    use Notifiable, HasRoles;
+    use Sluggable;
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+
+        'username','email', 'password','permission','slug',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * The attributes that should be hidden for arrays.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token','providerID',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function hasDefinePrivilege($permission)
+    {
+        if (!$permission) {
+            return false;
+        }
+
+
+        return $this->permission ==  $permission;
+    }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class,'user_id');
+    }
+    public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'username'
+            ]
+        ];
+    }
+
 }

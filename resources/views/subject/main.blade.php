@@ -1,4 +1,6 @@
+@extends('adminlte::page')
 @extends('layouts.header')
+@section('content')
 <div class="container">
     <div class="table-wrapper">
         <div class="table-title">
@@ -8,7 +10,7 @@
                     @include('layouts.flash_message')
                 </div>
                 <div class="col-sm-6">
-                    <a href="{{route('subject.create')}}" class="btn btn-success" data-toggle="modal"><i
+                    <a href="{{route('subject.create')}}" class="btn btn-success"><i
                             class="material-icons">&#xE147;</i> <span>Add New</span></a>
                 </div>
             </div>
@@ -48,5 +50,4 @@
         </div>
     </div>
 </div>
-</body>
-</html>
+@endsection

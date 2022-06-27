@@ -14,6 +14,18 @@ return [
     |
     */
 
+    'facebook' => [
+        'client_id' => env('FACEBOOK_APP_ID'),
+        'client_secret' => env('FACEBOOK_APP_SECRET'),
+        'redirect' => env('FACEBOOK_APP_CALLBACK_URL'),
+    ],
+
+    'google' => [
+        'client_id' => '955986688992-6po01nga7hkbp98ivbs8u81mnlac6j8d.apps.googleusercontent.com',
+        'client_secret' => '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',
+        'redirect' => 'http://localhost:8080/studentlaravel/public/callback/google',
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),

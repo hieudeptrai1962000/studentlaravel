@@ -82,6 +82,7 @@ return [
 
     'locale' => 'en',
 
+
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale
@@ -139,6 +140,9 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
+        Cviebrock\EloquentSluggable\ServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
@@ -191,6 +195,7 @@ return [
 
     'aliases' => [
 
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Form' => 'Collective\Html\FormFacade',
         'Html' => 'Collective\Html\HtmlFacade',
         'App' => Illuminate\Support\Facades\App::class,
