@@ -25,7 +25,7 @@ class PermissionController extends Controller
 
 
         $user = auth()->user();
-        $user->syncRoles([3]);
+        $user->syncRoles([2]);
         die();
 //        $user->syncPermissions([2,3]);
 //        dd($user->getAllPermissions());

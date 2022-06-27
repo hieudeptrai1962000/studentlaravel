@@ -66,7 +66,9 @@
                                 @endif
                             </div>
                         </div>
-                        <a href="redirect/facebook">FB Login</a>
+{{--                        <a href="callback/facebook">FB Login</a>--}}
+                        <a href="{{ url('/auth/redirect/facebook') }}" class="btn btn-primary"><i class="fa fa-facebook"></i> Facebook</a>
+                        <a href="{{ url('/auth/redirect/google') }}" class="btn btn-primary"><i class="fa fa-google"></i> Google</a>
                     </form>
                 </div>
             </div>

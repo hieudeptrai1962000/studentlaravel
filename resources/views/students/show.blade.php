@@ -252,7 +252,7 @@
                         <h3 class="product-title">{{$student->full_name}}</h3>
                         <p class="product-description">{{$student->email}}</p>
                         <h4 class="price">{{date('d-m-Y', strtotime($student->birthday))}}</h4>
-                        <h5 class="sizes">Gender:
+                        <h5 class="sizes">{{ __('main.gender') }}:
                             <span class="size" data-toggle="tooltip" title="small">
                             <?php
                                 if ($student->gender == 0) {
@@ -263,7 +263,7 @@
                                 ?>
                         </span>
                         </h5>
-                        <h5 class="sizes">Phonenumber:
+                        <h5 class="sizes">{{ __('main.phonenumber') }}:
                             <span class="size" data-toggle="tooltip" title="small">
                            {{$student->phone_number}}
                         </span>

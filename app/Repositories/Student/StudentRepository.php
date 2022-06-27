@@ -19,18 +19,10 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
         return $this->model->query();
     }
 
-    public function search($data)
+    public function search($data, $subjectCount)
     {
         $students = $this->model->with('stu');
-        $count = Subject::all()->count();
 
-
-        //AGE
-        if (isset($data['max_age']) && isset($data['max_age'])) {
-            $min = Carbon::now()->subYears($data['min_age']);
-            $max = Carbon::now()->subYears($data['max_age']);
-            $students->whereBetween('birthday', [$max, $min]);
-        }
         if (!empty($data['min_age'])) {
             $min = Carbon::now()->subYears($data['min_age']);
             $students->where('birthday', '<=', $min);
@@ -51,7 +43,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
         if (!empty($data['min_mark'])) {
             $students->whereHas('mark', function ($query) use ($data) {
                 if (!empty($data['subject_id'])) {
-                    $query = $query->where('subject_id', $data['subject_id']);
+                    $query->where('subject_id', $data['subject_id']);
                 }
 
                 $query->where('mark', '>=', $data['min_mark']);
@@ -61,54 +53,51 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
         if (!empty($data['max_mark'])) {
             $students->whereHas('mark', function ($query) use ($data) {
                 if (!empty($data['subject_id'])) {
-                    $query = $query->where('subject_id', $data['subject_id']);
+                    $query->where('subject_id', $data['subject_id']);
                 }
 
                 $query->where('mark', '<=', $data['max_mark']);
             });
         }
 
-
-        //DONE
-
         if (!empty($data['done']) && empty($data['not_done'])) {
             $students->whereHas('stu', function ($query) {
                 $query->where('mark', '>', 0);
-            }, '=', $count);
+            }, '=', $subjectCount);
         }
 
         if (!empty($data['not_done']) && empty($data['done'])) {
-            $students->has('stu', '<', $count);
+            $students->has('stu', '<', $subjectCount);
         }
 
         //PHONE
-        if (!empty($data['phoneviettel'])) {
-            $students->where(function ($query) use ($data) {
-                $query->where('phone_number', 'regexp', '096');
-            });
-        }
-        if (!empty($data['phonevina'])) {
-            $students->where(function ($query) use ($data) {
-                $query->where('phone_number', 'regexp', '083');
-            });
-        }
-        if (!empty($data['phonemobi'])) {
-            $students->where(function ($query) use ($data) {
-                $query->where('phone_number', 'regexp', '0123');
+        $phones = [
+            'viettel' => '^096|^097',
+            'vina' => '^083',
+            'mobi' => '^0123',
+        ];
+
+        if (!empty($data['viettel']) || !empty($data['vina']) || !empty($data['mobi'])) {
+            $students->where(function ($query) use ($data, $phones) {
+                foreach ($phones as $field => $phone) {
+                    if (!empty($data[$field])) {
+                        $query->orWhere('phone_number', 'regexp', $phone);
+                    }
+                }
             });
         }
 
         //AVG < 5
         if (!empty($data['less_5']) && empty($data['greater_5'])) {
 
-            $students->has('stu', '=', $count)
+            $students->has('stu', '=', $subjectCount)
                 ->whereHas('mark', function ($query) {
                     $query->havingRaw('AVG(mark) < 5');
                 });
         }
         if (!empty($data['greater_5']) && empty($data['less_5'])) {
 
-            $students->has('stu', '=', $count)
+            $students->has('stu', '=', $subjectCount)
                 ->whereHas('mark', function ($query) {
                     $query->havingRaw('AVG(mark) >= 5');
                 });

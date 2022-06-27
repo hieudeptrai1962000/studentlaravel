@@ -1,122 +1,103 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Jobs\SendEmail;
+use App\Http\Controllers\Controller;
 use App\Models\Student\Student;
-use App\Models\Subject\Subject;
-use App\Models\Task;
 use App\Repositories\Faculty\FacultyRepositoryInterface;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\Studentsubject\StudentsubjectRepositoryInterface;
 use App\Repositories\Subject\SubjectRepositoryInterface;
-use Carbon\Carbon;
+use App\Repositories\Users\UsersRepositoryInterface;
 use Illuminate\Http\Request;
+use App\Http\Resources\Product as ProductResource;
 
-class AgeController extends Controller
+class ProductController extends Controller
 {
 
     protected $studentRepo;
     protected $facultyRepo;
     protected $subjectRepo;
     protected $markRepo;
+    protected $userRepo;
 
     public function __construct(
         StudentRepositoryInterface        $studentRepo,
         FacultyRepositoryInterface        $facultyRepository,
         SubjectRepositoryInterface        $subjectRepository,
-        StudentsubjectRepositoryInterface $markRepo
+        StudentsubjectRepositoryInterface $markRepo,
+        UsersRepositoryInterface          $userRepo
 
     )
     {
-//        $this->middleware('role:admin role',['only' => ['index']]);
+//        $this->middleware('permission:delete articles per',['only' => ['updatemark','show']]);
         $this->studentRepo = $studentRepo;
         $this->facultyRepo = $facultyRepository;
         $this->subjectRepo = $subjectRepository;
         $this->markRepo = $markRepo;
+        $this->userRepo = $userRepo;
     }
-
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $subjects = $this->subjectRepo->getAllList();
-        $students = $this->studentRepo->search($request->all(), Subject::all()->count());
-        $faculties = $this->facultyRepo->query()->pluck('name','id');
+        $students = $this->studentRepo->getAllList();
 
-        return view('students.index', compact('students','subjects','faculties'))->with('i');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-        $students = $this->studentRepo->chickenStudent();
-        SendEmail::dispatch($students);
-        return redirect()->back();
-
+        return ProductResource::collection($students);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        dd($request->id);
+
+        return Student::create($request->all());
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  \App\Models\Student\  $student
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
-    }
+        $student = $this->studentRepo->find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return new ProductResource($student);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Student\  $student
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+         Student::find($id)->update($request->all());
+
+        return redirect()->route('superproducts.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  \App\Models\Student\  $student
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+
+        return  $this->studentRepo->destroy($id);
     }
 }

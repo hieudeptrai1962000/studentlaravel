@@ -22,7 +22,7 @@ class Locale
         // Lấy dữ liệu lưu trong Session, không có thì trả về default lấy trong config
 
         config(['app.locale' => $language]);
-        dd(Config::get('app.locale'));
+        
 
 
         // Chuyển ứng dụng sang ngôn ngữ được chọn

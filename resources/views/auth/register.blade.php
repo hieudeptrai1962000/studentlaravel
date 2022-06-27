@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Created By CodingLab - www.codinglabweb.com -->
+
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
@@ -182,10 +182,9 @@
 
 </style>
 <body>
-
 <div class="container">
     <div class="title">Registration</div>
-    <a href="/login" class="link-warning">Login</a>
+    <a href="{{ route('login') }}" class="link-warning">Login</a>
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -199,48 +198,45 @@
         {{ Form::open(array('route' => 'register.newuser','method' => 'post','enctype' => "multipart/form-data")) }}
         <div class="user-details">
             <div class="input-box">
-                <span class="details">Username</span>
-                <input type="text" name="username" placeholder="Enter your username" required>
+                {!! Form::label('Username', 'Username:', ['class' => 'details']) !!}
+                {!! Form::text('username', null , ['class' => 'form-control', 'placeholder' => 'Enter your username']) !!}
             </div>
             <div class="input-box">
-                <span class="details">Fullname</span>
-                <input type="text" name="full_name" placeholder="Enter your fullname" required>
+                {!! Form::label('Fullname', 'Fullname:', ['class' => 'details']) !!}
+                {!! Form::text('full_name', null , ['class' => 'form-control', 'placeholder' => 'Enter your fullname']) !!}
             </div>
             <div class="input-box">
-                <span class="details">Birthday</span>
-                <input type="date" name="birthday" required>
+                {!! Form::label('Birthday', 'Birthday:', ['class' => 'details']) !!}
+                {{ Form::date('birthday', new \DateTime()) }}
             </div>
             <div class="input-box">
-                <span class="details">Phone Number</span>
-                <input type="text" name="phone_number" placeholder="Enter your number" required>
+                {!! Form::label('Phone Number', 'Phone Number:', ['class' => 'details']) !!}
+                {!! Form::text('phone_number', null , ['class' => 'form-control', 'placeholder' => 'Enter your phonenumber']) !!}
             </div>
             <div class="input-box">
-                <span class="details">Avatar</span>
-                <input type="file" name="image" required>
+                {!! Form::label('Avatar', 'Avatar:', ['class' => 'details']) !!}
+                <input type="file" name="image" required accept="image/*">
             </div>
             <div class="input-box">
-                <span class="details">Email</span>
-                <input type="text" name="email" placeholder="Enter your email" required>
+                {!! Form::label('Email', 'Email:', ['class' => 'details']) !!}
+                {!! Form::text('email', null , ['class' => 'form-control', 'placeholder' => 'Enter your email']) !!}
             </div>
             <div class="input-box">
-                <span class="details">Password</span>
-                <input type="password" name="password" placeholder="Enter your password" required>
+                {!! Form::label('Password', 'Password:', ['class' => 'details']) !!}
+                {!! Form::password('password', null , ['class' => 'form-control', 'placeholder' => 'Enter your password']) !!}
+            </div>
+            <div class="input-box">
+                {!! Form::label('Re-Password', 'Re-Password:', ['class' => 'details']) !!}
+                {!! Form::password('repassword', null , ['class' => 'form-control', 'placeholder' => 'Enter your password again']) !!}
             </div>
         </div>
         <div class="gender-details">
             <label class="details">Choose Gender:</label>
-            <select id="gender" name="gender">
-                <option value="1">Female</option>
-                <option value="0">Male</option>
-            </select>
+            {!! Form::select('gender', ['1' => 'Female', '0' => 'Male'], '0'); !!}
         </div>
         <div class="gender-details">
             <label class="details">Choose Permission:</label>
-            <select id="permission" name="permission">
-                <option value="user">Select Permission:</option>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-            </select>
+            {!! Form::select('permission', ['admin' => 'Admin', 'user' => 'User'], 'admin'); !!}
         </div>
         <div class="button">
             {{Form::submit('Submit')}}
@@ -248,7 +244,6 @@
         {!! Form::close()  !!}
     </div>
 </div>
-
 </body>
 </html>
 

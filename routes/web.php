@@ -36,6 +36,8 @@ Route::group(['middleware' => 'locale'], function() {
 
 
 
+
+
 Route::group(['middleware' => 'auth'], function () {
 
 //    Route::resource('faculties', FacultyController::class)->middleware('can:superAdmin');;
@@ -68,15 +70,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('information', InforController::class);
 
 });
-Route::post('/regis', [RegisterController::class, 'RegisterNewUser'])->name('register.newuser');
+
+Route::post('registerNew', [RegisterController::class, 'RegisterNewUser'])->name('register.newuser');
 
 
 Route::resource('permission', PermissionController::class);
 
-Route::get('ajax-book-crud', [AjaxBOOKCRUDController::class, 'index']);
-Route::post('add-update-book', [AjaxBOOKCRUDController::class, 'store']);
-Route::post('edit-book', [AjaxBOOKCRUDController::class, 'edit']);
-Route::post('delete-book', [AjaxBOOKCRUDController::class, 'destroy']);
+//Route::get('ajax-book-crud', [AjaxBOOKCRUDController::class, 'index']);
+//Route::post('add-update-book', [AjaxBOOKCRUDController::class, 'store']);
+//Route::post('edit-book', [AjaxBOOKCRUDController::class, 'edit']);
+//Route::post('delete-book', [AjaxBOOKCRUDController::class, 'destroy']);
 
 
 Route::post('students/ajax/{id}', [StudentController::class, 'updateAjax'])->name('getStudentId');
@@ -95,8 +98,12 @@ Route::get('students/ajaxx/{id}', [StudentController::class, 'showAjax']);
 //    $user = \App\Models\Student\Student::find(3);
 //    $user->stu()->sync([1,2]);
 //});
-Route::get('/redirect/{social}', [SocialAuthController::class, 'redirect']);
-Route::get('/callback/{social}', [SocialAuthController::class, 'callback']);
+//Route::get('/redirect/{social}', [SocialAuthController::class, 'redirect']);
+//Route::get('/callback/{social}', [SocialAuthController::class, 'callback']);
+
+
+Route::get('/auth/redirect/{social}', [\App\Http\Controllers\SocialController::class,'login']);
+Route::get('/callback/{social}', [\App\Http\Controllers\SocialController::class,'callback']);
 
 
 Auth::routes();
@@ -108,4 +115,13 @@ Route::get('/home', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
+
+/// test
+///
+///
+///
+///

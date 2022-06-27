@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StudentRequest;
-use App\Models\Student\Student;
 use App\Repositories\Faculty\FacultyRepositoryInterface;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\Studentsubject\StudentsubjectRepositoryInterface;
@@ -12,13 +11,9 @@ use App\Repositories\Users\UsersRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 
 class StudentController extends Controller
 {
-
-
     protected $studentRepo;
     protected $facultyRepo;
     protected $subjectRepo;
@@ -54,6 +49,7 @@ class StudentController extends Controller
         $subjects = $this->subjectRepo->getAllList();
         $students = $this->studentRepo->paginate();
         $faculties = $this->facultyRepo->query()->pluck('name','id');
+
         return view('students.index', compact('students', 'subjects','faculties','userId'))->with('i');
     }
 
@@ -65,16 +61,16 @@ class StudentController extends Controller
      */
     public function store(StudentRequest $request)
     {
-
         $data = $request->all();
+
         if ($request->has('image')) {
             $file = $request->file('image');
-            $file_name = $file->move('uploads', $file->getClientOriginalName());
-//            dd($file_name);
-
+            $file_name = $file->move('uploads', time() . $file->getClientOriginalName());
         }
+
         $data['image'] = $file_name;
         $this->studentRepo->store($data);
+
         return redirect()->route('students.index')->with('success', 'Successful!');
 
 
@@ -88,6 +84,7 @@ class StudentController extends Controller
     public function create()
     {
         $faculty = $this->facultyRepo->getAllList();
+
         return view('students.edit', compact('faculty'));
     }
 
@@ -99,33 +96,10 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-
-
             $student = $this->studentRepo->find($id);
             $done = $student->stu;
             $all = $this->subjectRepo->getAllList();
             $diff = $all->diff($done);
-//        dd($done);
-//        $diff = $subject->diff($done);
-//
-//        $data = [];
-//        foreach ($diff as $value) {
-//            array_push($data, [
-//                'subject_id' => $value->id,
-//                'mark' => 0,
-//            ]);
-//        }
-//
-//        $marks = [];
-//        foreach ($data as $key => $value) {
-//            $marks[$value['subject_id']] = ['mark' => $value['mark']];
-//        }
-//        $this->studentRepo->find($id)->stu()->syncWithoutDetaching($marks);
-//        $persubject = DB::table('student_subject')
-//            ->join('students', 'student_id', '=', 'students.id')
-//            ->join('subjects', 'subject_id', '=', 'subjects.id')
-//            ->where('student_id', $id)
-//            ->get();
 
             return view('students.showMark', compact('diff','done','all','student'));
 
@@ -158,7 +132,7 @@ class StudentController extends Controller
         if ($request->has('image')) {
             $file = $request->file('image');
             $destinationPath = 'uploads';
-            $file_name = $file->move($destinationPath, $file->getClientOriginalName());
+            $file_name = $file->move($destinationPath, time() . $file->getClientOriginalName());
         }
         $data['image'] = $file_name;
         $this->studentRepo->find($id)->update($data);
@@ -258,27 +232,20 @@ class StudentController extends Controller
 
     public function showAjax($id)
     {
-//       $student = $this->studentRepo->find($id);
-//        $this->facultyRepo->getAllList();
-//
-//       return response()->json($student);
+       $student = $this->studentRepo->find($id);
+        $this->facultyRepo->getAllList();
+
+       return response()->json($student);
     }
 
-    public function updateAjax(Request $request, $id)
+    public function updateAjax(Request $request)
     {
-//        $student = $this->studentRepo->find($id);
-        ;
-//        if ($request->has('image')) {
-//            $file = $request->file('image');
-//            $destinationPath = 'uploads';
-//            $file_name = $file->move($destinationPath, $file->getClientOriginalName());
-//        }
-//        $data['image'] = $file_name;
-        $student = $this->studentRepo->find($id)->update([
-            'full_name' => $request->id,
-        ]);
-        dd($student);
-        return response()->json($student);
+        return response()->json($request->all());
+        $data = $this->studentRepo->find($request->id)->update($request->all());
+
+        return response()->json($data);
+//       $student = $this->studentRepo->find($request->id)->update($request->all);
+//        return response()->json($student);
     }
 
     public function showstudents($id , $slug)

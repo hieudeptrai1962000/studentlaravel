@@ -25,13 +25,19 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
+            'username' => 'required|max:50|min:5',
+            'full_name' => 'required|max:50|min:5',
             'email' => ['required',
                 Rule::unique('users'),
-                Rule::unique('students'),
                 'email','max:100'
             ],
-            'birthday' => 'date',
-            'phone_number' => 'max:10',
+            'image' => 'mimes:jpeg,jpg,png,gif|required|max:10000',
+            'password' => 'required',
+            'repassword' => 'required_with:password|same:password',
+            'birthday' => 'date|required',
+            'phone_number' => 'required|size:10',
+            'gender' => 'required',
+            'permission' => 'required',
         ];
     }
 }

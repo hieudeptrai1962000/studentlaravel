@@ -8,7 +8,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Cviebrock\EloquentSluggable\Sluggable;
 
-class User extends Authenticatable
+class   User extends Authenticatable
 {
     use Notifiable, HasRoles;
     use Sluggable;
@@ -19,7 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
 
-        'username','email', 'password','permission','slug'
+        'username','email', 'password','permission','slug',
     ];
 
     /**
@@ -28,7 +28,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token','providerID',
     ];
 
     public function hasDefinePrivilege($permission)

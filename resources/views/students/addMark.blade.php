@@ -1,4 +1,4 @@
-
+{{--remove layout--}}
 @extends('layouts.javas')
 @extends('adminlte::page')
 @extends('layouts.header')

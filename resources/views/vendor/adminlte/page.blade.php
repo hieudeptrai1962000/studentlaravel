@@ -2,6 +2,7 @@
 
 @inject('layoutHelper', 'JeroenNoten\LaravelAdminLte\Helpers\LayoutHelper')
 
+
 @section('adminlte_css')
     @stack('css')
     @yield('css')
