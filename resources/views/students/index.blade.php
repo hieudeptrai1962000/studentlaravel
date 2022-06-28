@@ -104,7 +104,7 @@
                     <td contenteditable id="{{'student_name_'.$student->id}}" scope="col">{{$student->full_name}}</td>
                     <td id="{{'student_email_'.$student->id}}" scope="col">{{$student->email}}</td>
                     <td contenteditable id="{{'student_birthday_'.$student->id}}"
-                        scope="col">{{date('d-m-Y', strtotime($student->birthday))}}</td>
+                        scope="col">{{$student->birthday}}</td>
 
 
                     <td id="{{'student_gender_'.$student->id}}" scope="col">
@@ -117,7 +117,7 @@
                         ?>
                     </td>
                     <td id="{{'student_phone_'.$student->id}}" scope="col">{{$student->phone_number}}</td>
-                    <td id="{{'student_image_'.$student->id}}" scope="col"><img width="100px" height="auto" src="{{asset(''.$student->image)}}"></td>
+                    <td id="{{'student_image_'.$student->id}}" scope="col"><img id="{{'new_image_'.$student->id}}" width="100px" height="auto" src="{{asset(''.$student->image)}}"></td>
 
 
                     <td>
@@ -182,16 +182,17 @@
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('birthday', 'Birthday', []) !!}
-                                    {!! Form::text('birthday', null, ['class' => 'form-control', 'id' => 'birthday_ajax']) !!}
+{{--                                    {!! Form::text('birthday', null, ['class' => 'form-control', 'id' => 'birthday_ajax']) !!}--}}
+                                    {!! Form::date('birthday', null ,['class' => 'form-control', 'id' => 'birthday_ajax']) !!}
                                 </div>
                                 <div class="form-group">
-                                    {!! Form::label('gender', 'Gender:', ['class' => 'col-lg-2 control-label', 'id' => 'gender_new']) !!}
+                                    {!! Form::label('gender', 'Gender:', ['class' => 'col-lg-2 control-label']) !!}
                                     <div class="col-lg-10">
                                         <label class="radio-inline">
-                                            {{Form::radio('gender', '0', true, ['id' => 'gender_ajax'])}} Nam
+                                            {{Form::radio('gender_ajax', '0', true)}} Nam
                                         </label>
                                         <label class="radio-inline">
-                                            {{Form::radio('gender', '1', true)}} Nữ
+                                            {{Form::radio('gender_ajax', '1', true)}} Nữ
                                         </label>
                                     </div>
                                 </div>
@@ -219,16 +220,31 @@
         @endsection
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script type="text/javascript">
+
             function ajaxfunction(id) {
+
+                var image = $('#student_image_' + id).html();
+                const extractFilename = (path) => {
+                    const pathArray = path.split("/");
+                    const lastIndex = pathArray.length - 1;
+                    return pathArray[lastIndex];
+                };
+                console.log(extractFilename(image));
+
+
+                // console.log(getFilename(image));
+
                 $('#exampleModal').modal('show')
                 $('#id_ajax').val($('#student_id_' + id).html());
                 $('#fullname_ajax').val($('#student_name_' + id).html());
                 $('#email_ajax').val($('#student_email_' + id).html());
 
-                // $('#birthday_ajax').val($('#student_birthday_' + id).html());
+                // $('#birthday_ajax').val(datetimeval);
                 $('#gender_ajax').val($('#student_gender_' + id).html());
+                $('#birthday_ajax').val($('#student_birthday_' + id).html());
                 $('#phone_ajax').val($('#student_phone_' + id).html());
-                // $('#avatar_ajax').val($('#student_image_' + id).html());
+                // $('img#avatar_ajax').attr('src', data.avatar_form);
+                // $('#avatar_ajax').attr($('#student_image_' + id).html());
             }
 
             $(document).ready(function () {
@@ -247,19 +263,24 @@
                     // } else {
                     //     $('#female_check').prop('checked', true);
                     // }
-                    // var birthday = $('#birthday_ajax').val();
-                    var gender = $('#gender_ajax').val();
-                    alert(gender)
+                    var birthday = $('#birthday_ajax').val();
+                    // var gender = $('#gender_ajax').val();
+                    // var gender = document.querySelector('input[name="gender_ajax"]:checked').value;
+                    var gender = $("input[type='radio'][name='gender_ajax']:checked").val();
                     var phone = $('#phone_ajax').val();
-                    // var avatar = $('#avatar_ajax').val();
+                    var avatarwp = $('#avatar_ajax').val();
+                    var avatar = avatarwp.replace(/^.*[\\\/]/, '');
                     // console.log(name)
+
+
                     data = {
                         id: student_id,
                         full_name: full_name,
                         email: email,
-                        // birthday: birthday,
+                        birthday: birthday,
                         gender: gender,
                         phone_number: phone,
+                        image: avatar,
                         // image: avatar,
                         _token: "{{csrf_token()}}",
                         // productName: productName
@@ -269,12 +290,26 @@
                         url: "students/ajax/" + student_id,
                         method: "post",
                         data: data,
+                        dataType: 'json',
                         success: function (response) {
                             alert('Đã cập nhật thành công !')
                             console.log(response);
+                            if (data.gender == '1')
+                            {
+                                var valueGender = 'Nữ'
+                            }
+                            else
+                            {
+                                var valueGender = 'Nam'
+                            }
+                            console.log(data)
                             $('#student_name_' + student_id).html(data.full_name);
                             $('#student_email_' + student_id).html(data.email);
                             $('#student_phone_' + student_id).html(data.phone_number);
+                            $('#student_gender_' + student_id).html(valueGender);
+                            $('#student_birthday_' + student_id).html(data.birthday);
+                            // $('#student_image_' + student_id).html(data.image);
+                            $('#new_image_' + student_id).attr('src', 'uploads/' + data.image);
                             $('#form-ajax-crud').trigger("reset");
                             $('#exampleModal').modal('hide')
                             // $('#button_insert').val('Save Changes');

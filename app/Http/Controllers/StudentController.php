@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
+
 class StudentController extends Controller
 {
     protected $studentRepo;
@@ -240,10 +241,25 @@ class StudentController extends Controller
 
     public function updateAjax(Request $request)
     {
-        return response()->json($request->all());
-        $data = $this->studentRepo->find($request->id)->update($request->all());
 
-        return response()->json($data);
+//        return response()->json(basename($request->image));
+        $data = $request->all();
+
+
+
+        $data['image'] = asset(pare_url_file($data['image']));
+        $students = $this->studentRepo->find($request->id)->update($data);
+        return response()->json($students);
+
+
+//        $data['image'] = asset(pare_url_file($request->image));
+
+//        return response()->json($request->all());
+
+//        $students->avatar = asset(pare_url_file($students->avatar));
+
+
+        return response()->json($students);
 //       $student = $this->studentRepo->find($request->id)->update($request->all);
 //        return response()->json($student);
     }
