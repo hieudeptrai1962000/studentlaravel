@@ -246,10 +246,6 @@ return [
             'icon'    => 'fas fa-fw fa-share',
             'submenu' => [
                 [
-                    'text' => 'Information',
-                    'url'  => 'information',
-                ],
-                [
                     'text' => 'Students List',
                     'url'  => 'students',
                 ],
@@ -259,7 +255,7 @@ return [
                 ],
                 [
                     'text' => 'Subject',
-                    'url'  => 'subject',
+                    'url'  => 'subjects',
                 ],
             ],
         ],

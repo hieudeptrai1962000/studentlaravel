@@ -1,5 +1,4 @@
 @extends('adminlte::page')
-@extends('layouts.header')
 @section('content')
     <div class="container">
         <div class="table-wrapper">

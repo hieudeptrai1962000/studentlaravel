@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Student\Student;
 use App\Providers\RouteServiceProvider;
 use App\Repositories\Faculty\FacultyRepositoryInterface;
 use App\Repositories\Student\StudentRepositoryInterface;
-use App\Repositories\Studentsubject\StudentsubjectRepositoryInterface;
 use App\Repositories\Subject\SubjectRepositoryInterface;
 use App\Repositories\Users\UsersRepositoryInterface;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -39,7 +37,6 @@ class LoginController extends Controller
     protected $studentRepo;
     protected $facultyRepo;
     protected $subjectRepo;
-    protected $markRepo;
     protected $userRepo;
 
     /**
@@ -51,7 +48,6 @@ class LoginController extends Controller
         StudentRepositoryInterface        $studentRepo,
         FacultyRepositoryInterface        $facultyRepository,
         SubjectRepositoryInterface        $subjectRepository,
-        StudentsubjectRepositoryInterface $markRepo,
         UsersRepositoryInterface          $userRepo
     )
     {
@@ -59,7 +55,6 @@ class LoginController extends Controller
         $this->studentRepo = $studentRepo;
         $this->facultyRepo = $facultyRepository;
         $this->subjectRepo = $subjectRepository;
-        $this->markRepo = $markRepo;
         $this->userRepo = $userRepo;
 
     }
@@ -72,9 +67,14 @@ class LoginController extends Controller
             $data = $this->userRepo->find(Auth::id())->student;
             $slug = $data->slug;
             $userId = $data->id;
-            return redirect()->route('show.students',[$userId, $slug]);
+            return redirect()->route('show-student',[$userId, $slug]);
         }
 
         return redirect('login')->with('warning','Email or password is incorrect')->withInput();
+    }
+
+    public function logout(Request $request) {
+        Auth::logout();
+        return redirect('/login');
     }
 }

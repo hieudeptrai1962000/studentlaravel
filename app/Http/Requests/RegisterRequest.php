@@ -32,12 +32,12 @@ class RegisterRequest extends FormRequest
                 'email','max:100'
             ],
             'image' => 'mimes:jpeg,jpg,png,gif|required|max:10000',
-            'password' => 'required',
+            'password' => 'required|same:repassword|max:50',
             'repassword' => 'required_with:password|same:password',
             'birthday' => 'date|required',
-            'phone_number' => 'required|size:10',
-            'gender' => 'required',
-            'permission' => 'required',
+            'phone_number' => 'required|digits_between:9,11',
+            'gender' => 'required|boolean',
+            'permission' => 'required|in:admin,user',
         ];
     }
 }

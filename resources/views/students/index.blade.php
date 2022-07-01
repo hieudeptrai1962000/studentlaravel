@@ -1,19 +1,18 @@
 @extends('adminlte::page')
-{{--@extends('layouts.header')--}}
 @section('content')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <button type="button" class="btn btn-light">
+    <button type="button" class="btn btn-light" style="display:none">
         <a target="_blank" href="{{route('students.create')}}" class="btn btn-success"
            style="background-color: #343a40; border-color: white; margin-right: 10px">Add New</a>
     </button>
     <button type="button" class="btn btn-light">
-        <a href="{{route('age.create')}}" class="btn btn-success"
-           style="background-color: pink; border-color: white">Send Mail to Bad Student</a>
+        <a href="{{route('send-email')}}" class="btn btn-success"
+           style="background-color: pink; border-color: white; margin-top: 20px">Send Mail to Bad Student</a>
     </button>
 
-    <div class="form-group" style="margin-left: 20px">
-        {{Form::open(['method' => 'GET', 'route' => 'age.index', 'class' => 'form-inline'])}}
-        <div class="form-group" style="margin-right: 50px">
+    <div class="form-group" style="margin-top: 20px">
+        {{Form::open(['method' => 'GET', 'route' => 'search', 'class' => 'form-inline'])}}
+        <div class="form-group" style="margin-right: 20px">
             {{Form::label('min1','Age from: ')}}
             {{Form::text('min_age',isset($data['min_age']) ? $data['min_age'] : null, ['class' => 'form-control','style' => 'width: 60px'])}}
             {{Form::label('max1','To: ')}}
@@ -37,53 +36,44 @@
             {{Form::label('mark','To: ')}}
             {{Form::text('max_mark',isset($data['max_mark']) ? $data['max_mark'] : null, ['class' => 'form-control','style' => 'width: 60px'])}}
         </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-left: 20px">
             <div style="display: inline-block;">
-                <span><b>Mobile network:</b></span>
                 <div class="form-check" style="display: inline-block">
-                    {{Form::checkbox('viettel')}}
-                    {{Form::label('pp','Viettel')}}
+                    {{ Form::checkbox('viettel', 1, null, ['id'=>'viettel_checkbox']) }}
+                    {{Form::label('viettel_checkbox','Viettelphone')}}
                 </div>
 
                 <div class="form-check" style="display: inline-block">
-                    {{Form::checkbox('mobi')}}
-                    {{Form::label('pp','Mobiphone')}}
+                    {{ Form::checkbox('mobi', 1, null, ['id'=>'mobi_checkbox']) }}
+                    {{Form::label('mobi_checkbox','Mobiphone')}}
                 </div>
 
                 <div class="form-check" style="display: inline-block">
-                    {{Form::checkbox('vina')}}
-                    {{Form::label('pp','Vinaphone')}}
+                    {{ Form::checkbox('vina', 1, null, ['id'=>'vina_checkbox']) }}
+                    {{Form::label('vina_checkbox','Vinaphone')}}
                 </div>
 
             </div>
 
 
-            <div class="form-check" style="display: inline-block;margin-left: 50px">
-                {!! Form::label('don4','Finished subject: ',['style' => 'font-weight:bold'] ) !!}
-                {{Form::checkbox('done','1',isset($data['done']) ? $data['done'] : null,['id' => 'done4'])}}
-                {{Form::label('done5',' Or Not')}}
-                {{Form::checkbox('not_done','1',isset($data['not_done']) ? $data['not_done'] : null,['id' => 'done5'])}}
+            <div class="form-group" style="margin-left: 20px">
+                {{Form::label('learn_status','Finished: ')}}
+                {{Form::select('learn_status',['all'=> 'All','finished'=>'Finished', 'unfinished'=>'Unfinished'], request('learn_status'))}}
             </div>
-            <div class="form-check" style="display: inline-block;margin-left: 50px">
-                {!! Form::label('check6','AVG < 5: ',['style' => 'font-weight:bold'] ) !!}
-                {{Form::checkbox('less_5','1',isset($data['less_5']) ? $data['less_5'] : null,['id' => 'check6'])}}
-                {{Form::label('check7',' Or not')}}
-                {{Form::checkbox('greater_5','1',isset($data['greater_5']) ? $data['greater_5'] : null,['id' => 'check7'])}}
-
-            </div>
-            <div style="    display: flex;margin-left: 20px">
+            <div style=" display: block;margin-left: 20px">
                 <button type="submit" class="btn btn-info"><i class="fa fa-gamepad" aria-hidden="true"></i></button>
             </div>
             {{Form::close()}}
         </div>
-        @include('layouts.flash_message')
 
+            @include('layouts.flash_message')
 
-        <a href="{!! route('user.change-language', ['en']) !!}">{{ __('main.english') }}</a>
-        <a href="{!! route('user.change-language', ['vi']) !!}">{{ __('main.vietnam') }}</a>
+        <div style="margin-top: 20px">
+            <a href="{!! route('user.change-language', ['en']) !!}">{{ __('main.english') }}</a>
+            <a href="{!! route('user.change-language', ['vi']) !!}">{{ __('main.vietnam') }}</a>
+        </div>
 
-
-        <table id="ajaxcontent" class="table table-striped table-hover">
+        <table id="ajaxcontent" class="table table-striped table-hover" style="margin-top: 20px">
             <thead>
             <tr>
                 <th scope="col">STT</th>
@@ -117,30 +107,29 @@
                         ?>
                     </td>
                     <td id="{{'student_phone_'.$student->id}}" scope="col">{{$student->phone_number}}</td>
-                    <td id="{{'student_image_'.$student->id}}" scope="col"><img id="{{'new_image_'.$student->id}}" width="100px" height="auto" src="{{asset(''.$student->image)}}"></td>
+                    <td id="{{'student_image_'.$student->id}}" scope="col"><img id="{{'new_image_'.$student->id}}"
+                                                                                src="{{asset(url_file( $student ->image))}}" alt="" class="img img-responsive"
+                                                                                width="50px" height="50px"></td>
 
 
                     <td>
                         {!! Form::model($student, ['route' => ['students.destroy', $student->id], 'method' => 'DELETE', 'id' => 'FormDelete']) !!}
-                        <a class="btn btn-xs btn-default text-danger mx-1 shadow"
+                        <a style="display:none" class="btn btn-xs btn-default text-danger mx-1 shadow"
                            href="{{ route('students.edit',$student->id ) }}">Edit</a>
-
-
                         <a class="btn btn-xs btn-default text-danger mx-1 shadow"
-                           href="{{ route('students.show', $student->id) }}">Update Subject and Mark</a>
+                           href="{{ route('createSubjectAndMark', $student->id) }}">Update Subject and Mark</a>
                         <a class="btn btn-xs btn-default text-danger mx-1 shadow"
-                           href="{{ route('show.students',[$student->id, $student->slug] ) }}">Show</a>
-
+                           href="{{ route('show-student',[$student->id, $student->slug] ) }}">Show</a>
 
                         <button type="button" onclick="ajaxfunction({{$student->id}})"
                                 class="btn btn-primary" data-id="{{$student->id}}">
                             Ajax Edit
                         </button>
-                        @can('delete articles per')
+{{--                        @can('delete articles per')--}}
                             {!! Form::submit('Delete', ['class' => 'btn btn-xs btn-default text-danger mx-1 shadow', 'id'=>'btndel' ]) !!}
                             {{--                            @else--}}
                             {{--                                {!! Form::submit('Delete Role', ['class' => 'btn btn-xs btn-default text-danger mx-1 shadow', 'id'=>'btndel' ]) !!}--}}
-                        @endcan
+{{--                        @endcan--}}
                         {!! Form::close()  !!}
                     </td>
 
@@ -159,6 +148,7 @@
             <div class="modal-dialog" role="document">
                 <form id="form-ajax-crud" enctype="multipart/form-data">
                     @csrf
+
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
@@ -176,23 +166,23 @@
                                     {!! Form::label('name', 'Student name', []) !!}
                                     {!! Form::text('full_name', null, ['class' => 'form-control', 'id' => 'fullname_ajax']) !!}
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" style="display: none">
                                     {!! Form::label('email', 'Email', []) !!}
                                     {!! Form::text('email', null, ['class' => 'form-control', 'id' => 'email_ajax']) !!}
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('birthday', 'Birthday', []) !!}
-{{--                                    {!! Form::text('birthday', null, ['class' => 'form-control', 'id' => 'birthday_ajax']) !!}--}}
+                                    {{--                                    {!! Form::text('birthday', null, ['class' => 'form-control', 'id' => 'birthday_ajax']) !!}--}}
                                     {!! Form::date('birthday', null ,['class' => 'form-control', 'id' => 'birthday_ajax']) !!}
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('gender', 'Gender:', ['class' => 'col-lg-2 control-label']) !!}
                                     <div class="col-lg-10">
                                         <label class="radio-inline">
-                                            {{Form::radio('gender_ajax', '0', true)}} Nam
+                                            {{Form::radio('gender', '0', true)}} Nam
                                         </label>
                                         <label class="radio-inline">
-                                            {{Form::radio('gender_ajax', '1', true)}} Nữ
+                                            {{Form::radio('gender', '1', true)}} Nữ
                                         </label>
                                     </div>
                                 </div>
@@ -203,7 +193,7 @@
                                 <div class="form-group">
                                     <div class="col-lg-10">
                                         <h9>Avatar</h9>
-                                        <input type="file" id="avatar_ajax" name="image" value="">
+                                        <input type="file" id="avatar_ajax" name="image" accept="image/*">
                                     </div>
                                 </div>
                             </div>
@@ -217,113 +207,6 @@
                 </form>
             </div>
         </div>
+        <script src="{{ asset('js/updateAjax.js') }}"></script>
         @endsection
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script type="text/javascript">
-
-            function ajaxfunction(id) {
-
-                var image = $('#student_image_' + id).html();
-                const extractFilename = (path) => {
-                    const pathArray = path.split("/");
-                    const lastIndex = pathArray.length - 1;
-                    return pathArray[lastIndex];
-                };
-                console.log(extractFilename(image));
-
-
-                // console.log(getFilename(image));
-
-                $('#exampleModal').modal('show')
-                $('#id_ajax').val($('#student_id_' + id).html());
-                $('#fullname_ajax').val($('#student_name_' + id).html());
-                $('#email_ajax').val($('#student_email_' + id).html());
-
-                // $('#birthday_ajax').val(datetimeval);
-                $('#gender_ajax').val($('#student_gender_' + id).html());
-                $('#birthday_ajax').val($('#student_birthday_' + id).html());
-                $('#phone_ajax').val($('#student_phone_' + id).html());
-                // $('img#avatar_ajax').attr('src', data.avatar_form);
-                // $('#avatar_ajax').attr($('#student_image_' + id).html());
-            }
-
-            $(document).ready(function () {
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-
-                $('#button_insert').on('click', function () {
-                    var student_id = $('#id_ajax').val();
-                    var full_name = $('#fullname_ajax').val();
-                    var email = $('#email_ajax').val();
-                    // if ($('#gender_ajax').val() === 1) {
-                    //     $('#male_check').prop('checked', true);
-                    // } else {
-                    //     $('#female_check').prop('checked', true);
-                    // }
-                    var birthday = $('#birthday_ajax').val();
-                    // var gender = $('#gender_ajax').val();
-                    // var gender = document.querySelector('input[name="gender_ajax"]:checked').value;
-                    var gender = $("input[type='radio'][name='gender_ajax']:checked").val();
-                    var phone = $('#phone_ajax').val();
-                    var avatarwp = $('#avatar_ajax').val();
-                    var avatar = avatarwp.replace(/^.*[\\\/]/, '');
-                    // console.log(name)
-
-
-                    data = {
-                        id: student_id,
-                        full_name: full_name,
-                        email: email,
-                        birthday: birthday,
-                        gender: gender,
-                        phone_number: phone,
-                        image: avatar,
-                        // image: avatar,
-                        _token: "{{csrf_token()}}",
-                        // productName: productName
-                    };
-                    // console.log(data);
-                    $.ajax({
-                        url: "students/ajax/" + student_id,
-                        method: "post",
-                        data: data,
-                        dataType: 'json',
-                        success: function (response) {
-                            alert('Đã cập nhật thành công !')
-                            console.log(response);
-                            if (data.gender == '1')
-                            {
-                                var valueGender = 'Nữ'
-                            }
-                            else
-                            {
-                                var valueGender = 'Nam'
-                            }
-                            console.log(data)
-                            $('#student_name_' + student_id).html(data.full_name);
-                            $('#student_email_' + student_id).html(data.email);
-                            $('#student_phone_' + student_id).html(data.phone_number);
-                            $('#student_gender_' + student_id).html(valueGender);
-                            $('#student_birthday_' + student_id).html(data.birthday);
-                            // $('#student_image_' + student_id).html(data.image);
-                            $('#new_image_' + student_id).attr('src', 'uploads/' + data.image);
-                            $('#form-ajax-crud').trigger("reset");
-                            $('#exampleModal').modal('hide')
-                            // $('#button_insert').val('Save Changes');
-                        },
-                        error: function () {
-                            alert('ko thanh cong')
-                        }
-                    })
-
-                })
-            });
-
-        </script>
-
-
-
 

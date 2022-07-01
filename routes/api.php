@@ -20,7 +20,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('superproducts', 'App\Http\Controllers\Api\ProductController');
-Route::put('superproducts/{id}', [ProductController::class, 'update']);
-Route::delete('superproducts/{id}', [ProductController::class, 'destroy']);
-Route::get('superproducts/{id}', [ProductController::class, 'show']);
+
+Route::controller(ProductController::class)->group(function ()
+{
+    Route::put('superproducts/{id}', 'update');
+    Route::delete('superproducts/{id}','destroy');
+    Route::get('superproducts/{id}', 'show');
+});
+
 

@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\StudentRequest;
+use App\Http\Requests\UpdateMarkRequest;
+use App\Jobs\SendEmail;
+use App\Models\Subject\Subject;
 use App\Repositories\Faculty\FacultyRepositoryInterface;
 use App\Repositories\Student\StudentRepositoryInterface;
-use App\Repositories\Studentsubject\StudentsubjectRepositoryInterface;
 use App\Repositories\Subject\SubjectRepositoryInterface;
 use App\Repositories\Users\UsersRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 
 class StudentController extends Controller
@@ -18,15 +22,13 @@ class StudentController extends Controller
     protected $studentRepo;
     protected $facultyRepo;
     protected $subjectRepo;
-    protected $markRepo;
     protected $userRepo;
 
     public function __construct(
-        StudentRepositoryInterface        $studentRepo,
-        FacultyRepositoryInterface        $facultyRepository,
-        SubjectRepositoryInterface        $subjectRepository,
-        StudentsubjectRepositoryInterface $markRepo,
-        UsersRepositoryInterface          $userRepo
+        StudentRepositoryInterface $studentRepo,
+        FacultyRepositoryInterface $facultyRepository,
+        SubjectRepositoryInterface $subjectRepository,
+        UsersRepositoryInterface   $userRepo
 
     )
     {
@@ -34,7 +36,6 @@ class StudentController extends Controller
         $this->studentRepo = $studentRepo;
         $this->facultyRepo = $facultyRepository;
         $this->subjectRepo = $subjectRepository;
-        $this->markRepo = $markRepo;
         $this->userRepo = $userRepo;
     }
 
@@ -46,12 +47,11 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $userId = $this->userRepo->find(Auth::id())->student;
-        $subjects = $this->subjectRepo->getAllList();
+        $subjects = $this->subjectRepo->getAll();
         $students = $this->studentRepo->paginate();
         $faculties = $this->facultyRepo->query()->pluck('name','id');
 
-        return view('students.index', compact('students', 'subjects','faculties','userId'))->with('i');
+        return view('students.index', compact('students', 'subjects', 'faculties'));
     }
 
     /**
@@ -64,12 +64,14 @@ class StudentController extends Controller
     {
         $data = $request->all();
 
-        if ($request->has('image')) {
-            $file = $request->file('image');
-            $file_name = $file->move('uploads', time() . $file->getClientOriginalName());
+        if ($request->hasFile('image')) {
+
+            $file = upload('image');
+            if (isset($file['name'])) {
+                $data['image'] = $file['name'];
+            }
         }
 
-        $data['image'] = $file_name;
         $this->studentRepo->store($data);
 
         return redirect()->route('students.index')->with('success', 'Successful!');
@@ -84,7 +86,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        $faculty = $this->facultyRepo->getAllList();
+        $faculty = $this->facultyRepo->getAll();
 
         return view('students.edit', compact('faculty'));
     }
@@ -97,14 +99,7 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-            $student = $this->studentRepo->find($id);
-            $done = $student->stu;
-            $all = $this->subjectRepo->getAllList();
-            $diff = $all->diff($done);
-
-            return view('students.showMark', compact('diff','done','all','student'));
-
-
+       //
     }
 
     /**
@@ -116,7 +111,7 @@ class StudentController extends Controller
     public function edit($id)
     {
         $student = $this->studentRepo->find($id);
-        $faculty = $this->facultyRepo->getAllList();
+        $faculty = $this->facultyRepo->getAll();
         return view('students.edit', compact('student', 'faculty'));
     }
 
@@ -149,62 +144,32 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-
-//        if(Gate::allows('permission','admin'))
-//        {
-//            $this->studentRepo->destroy($id);
-//
-//            return redirect()->route('students.index')->with('success', 'Successfully!');
-//        }
-//
-//        return redirect()->route('students.index')->with('success', 'Nope!');
-
 //        $user = auth()->user();
 //        if ($user->hasRole('admin role'))
 //        {
+        if (Gate::allows('permission', 'admin')) {
+            $student = $this->studentRepo->find($id);
             $this->studentRepo->destroy($id);
+            if (!empty($student->image)) {
+                unlink(public_path(url_file($student->image)));
+            }
 
             return redirect()->route('students.index')->with('success', 'Successfully!');
-//        }
-//
-//        else
-//        {
-//            return redirect()->route('students.index')->with('success', 'Nope!');
-//        }
+        }
 
+        return redirect()->route('students.index')->with('warning', 'Permission Denied  ');
     }
 
-//    public function addsubject($id)
-//    {
-//        $subject = $this->subjectRepo->getAllList();
-//        $student = $this->studentRepo->find($id);
-//        return view('students.updatesubject', compact('student', 'subject'));
-//    }
-//
-//    public function updatesubject(Request $request)
-//    {
-//        $student_id = $request->input('student_id');
-//        $this->studentRepo->find($student_id)->stu()->sync($request->subject_id);
-//
-//        return redirect()->route('students.index')->with('success', 'Successfully !');
-//    }
-//
-//    public function addmark(Request $request, $id)
-//    {
-//        $student = $this->studentRepo->find($id);
-////        $mark = $this->markRepo->find($id);
-//        $subject = $this->subjectRepo->getAllList();
-////        $subject = $this->subjectRepo->getAllList();
-//        $user= DB::table('student_subject')
-//            ->join('subjects', 'student_subject.subject_id', '=', 'subjects.id')
-//            ->join('students','student_subject.student_id','=','students.id')
-//            ->get()->where('id',$id);
-//
-//        return view('students.addMark', compact('user','subject','student'));
-//
-//    }
+    public function createSubjectAndMark($id)
+    {
+        $student = $this->studentRepo->find($id);
+        $subjectDones = $student->students;
+        $allSubject = $this->subjectRepo->getAll();
 
-    public function updatemark(Request $request, $id)
+        return view('students.showMark', compact('subjectDones', 'allSubject', 'student'));
+    }
+
+    public function updateSubjectAndMark(UpdateMarkRequest $request, $id)
     {
         if (isset($request->subject_id)) {
             $data = [];
@@ -219,58 +184,66 @@ class StudentController extends Controller
                 $marks[$value['subject_id']] = ['mark' => $value['mark']];
             }
 
-            $this->studentRepo->find($id)->stu()->sync($marks);
+            $this->studentRepo->find($id)->students()->sync($marks);
 
             return redirect()->route('students.index')->with('success', 'Successfully !');
-        }
-        else
-        {
-            $this->studentRepo->find($id)->stu()->detach();
+        } else {
+            $this->studentRepo->find($id)->students()->detach();
 
             return redirect()->route('students.index');
         }
     }
 
-    public function showAjax($id)
+    public function searchStudent(SearchRequest $request)
     {
-       $student = $this->studentRepo->find($id);
-        $this->facultyRepo->getAllList();
+        $subjects = $this->subjectRepo->getAll();
+        $students = $this->studentRepo->search($request->all(), Subject::all()->count());
+        $faculties = $this->facultyRepo->query()->pluck('name', 'id');
 
-       return response()->json($student);
+        return view('students.index', compact('students', 'subjects', 'faculties'));
     }
 
-    public function updateAjax(Request $request)
+    public function sendEmail()
     {
+        $students = $this->studentRepo->chickenStudent(Subject::all()->count());
+        SendEmail::dispatch($students);
+        return redirect()->back();
+    }
 
-//        return response()->json(basename($request->image));
+
+    public function updateAjax(StudentRequest $request)
+    {
         $data = $request->all();
 
+        if ($request->hasFile('image')) {
+            $old_image = $this->studentRepo->find($request->id);
+            if (!empty($old_image->image)) {
+                unlink(public_path(url_file($old_image->image)));
+            }
 
+            $file = upload('image');
+            if (isset($file['name'])) {
+                $data['image'] = $file['name'];
+            }
+        } else {
+            unset($data['image']);
+        }
+        $data['slug'] = str_slug($data['full_name']);
 
-        $data['image'] = asset(pare_url_file($data['image']));
-        $students = $this->studentRepo->find($request->id)->update($data);
-        return response()->json($students);
+        $this->studentRepo->find($request->id)->update($data);
+        $student = $this->studentRepo->find($request->id);
+        $student->image = asset(url_file($student->image));
 
-
-//        $data['image'] = asset(pare_url_file($request->image));
-
-//        return response()->json($request->all());
-
-//        $students->avatar = asset(pare_url_file($students->avatar));
-
-
-        return response()->json($students);
-//       $student = $this->studentRepo->find($request->id)->update($request->all);
-//        return response()->json($student);
+        return response()->json($student);
     }
 
-    public function showstudents($id , $slug)
+    public function showstudents($id, $slug)
     {
         $students = $this->studentRepo->query()
-            ->where('id',$id)
-            ->where('slug',$slug)
+            ->where('id', $id)
+            ->orWhere('slug', $slug)
             ->get();
-        return view('students.show',compact('students'));
+        return view('students.show', compact('students'));
     }
 
 }

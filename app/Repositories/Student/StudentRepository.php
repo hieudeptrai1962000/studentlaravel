@@ -2,7 +2,6 @@
 namespace App\Repositories\Student;
 
 use App\Models\Student\Student;
-use App\Models\Subject\Subject;
 use App\Repositories\BaseRepository;
 use Carbon\Carbon;
 
@@ -21,7 +20,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 
     public function search($data, $subjectCount)
     {
-        $students = $this->model->with('stu');
+        $students = $this->model->with('students');
 
         if (!empty($data['min_age'])) {
             $min = Carbon::now()->subYears($data['min_age']);
@@ -60,14 +59,13 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
             });
         }
 
-        if (!empty($data['done']) && empty($data['not_done'])) {
-            $students->whereHas('stu', function ($query) {
+        if (!empty($data['learn_status']) && $data['learn_status'] == 'finished') {
+            $students->whereHas('students', function ($query) {
                 $query->where('mark', '>', 0);
             }, '=', $subjectCount);
         }
-
-        if (!empty($data['not_done']) && empty($data['done'])) {
-            $students->has('stu', '<', $subjectCount);
+        if (!empty($data['learn_status']) && $data['learn_status'] == 'unfinished') {
+            $students->has('students', '<', $subjectCount);
         }
 
         //PHONE
@@ -87,36 +85,20 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
             });
         }
 
-        //AVG < 5
-        if (!empty($data['less_5']) && empty($data['greater_5'])) {
-
-            $students->has('stu', '=', $subjectCount)
-                ->whereHas('mark', function ($query) {
-                    $query->havingRaw('AVG(mark) < 5');
-                });
-        }
-        if (!empty($data['greater_5']) && empty($data['less_5'])) {
-
-            $students->has('stu', '=', $subjectCount)
-                ->whereHas('mark', function ($query) {
-                    $query->havingRaw('AVG(mark) >= 5');
-                });
-        }
-
         return $students->paginate(5);
     }
 
-    public function chickenStudent()
+    public function chickenStudent($count)
     {
-        $students = $this->model->with('stu');
-        $count = Subject::all()->count();
-        $students->has('stu', '=', $count)
+        $students = $this->model->with('students');
+        $students->has('students', '=', $count)
             ->whereHas('mark', function ($query) {
                 $query->havingRaw('AVG(mark) < 5');
             });
 
-        return $students->paginate();
+        return $students->get();
     }
+
 }
 
 ?>

@@ -14,7 +14,7 @@ class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function getAllList()
+    public function getAll()
     {
         return $this->model->all();
     }
@@ -46,8 +46,5 @@ class BaseRepository implements BaseRepositoryInterface
         $models = $this->find($id);
         return $models->delete();
     }
-
-
 }
-
 ?>

@@ -25,7 +25,7 @@ class SubjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=> ['required',
+            'name'=> ['required','max:50',
                 Rule::unique('subjects')->ignore($this->subject),
             ],
         ];

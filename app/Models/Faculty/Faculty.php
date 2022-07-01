@@ -13,8 +13,8 @@ class Faculty extends Model
     protected $table = 'faculties';
     protected $fillable = ['name'];
 
-    public function student()
+    public function students()
     {
-        return $this->hasMany(Student::class,'faculty_id','id');
+        return $this->hasMany(Student::class);
     }
 }

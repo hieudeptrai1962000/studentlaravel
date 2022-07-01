@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FacultyRequest;
+use App\Models\Faculty\Faculty;
 use App\Repositories\Faculty\FacultyRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -34,7 +35,8 @@ class FacultyController extends Controller
      */
     public function create()
     {
-        return view('faculty.edit');
+        $newFaculty = new Faculty();
+        return view('faculty.edit', compact('newFaculty'));
     }
 
     /**

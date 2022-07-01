@@ -7,7 +7,6 @@ use App\Http\Requests\RegisterRequest;
 use App\Providers\RouteServiceProvider;
 use App\Repositories\Faculty\FacultyRepositoryInterface;
 use App\Repositories\Student\StudentRepositoryInterface;
-use App\Repositories\Studentsubject\StudentsubjectRepositoryInterface;
 use App\Repositories\Subject\SubjectRepositoryInterface;
 use App\Repositories\Users\UsersRepositoryInterface;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -40,15 +39,14 @@ class RegisterController extends Controller
     protected $studentRepo;
     protected $facultyRepo;
     protected $subjectRepo;
-    protected $markRepo;
     protected $userRepository;
 
     public function __construct(
-        UsersRepositoryInterface  $usersRepository,
-        StudentRepositoryInterface        $studentRepo,
-        FacultyRepositoryInterface        $facultyRepository,
-        SubjectRepositoryInterface        $subjectRepository,
-        StudentsubjectRepositoryInterface $markRepo
+        UsersRepositoryInterface   $usersRepository,
+        StudentRepositoryInterface $studentRepo,
+        FacultyRepositoryInterface $facultyRepository,
+        SubjectRepositoryInterface $subjectRepository
+
 
     )
     {
@@ -56,35 +54,36 @@ class RegisterController extends Controller
         $this->studentRepo = $studentRepo;
         $this->facultyRepo = $facultyRepository;
         $this->subjectRepo = $subjectRepository;
-        $this->markRepo = $markRepo;
         $this->middleware('guest');
     }
 
 
-   public function RegisterNewUser(RegisterRequest $request)
-   {
+    public function RegisterUser(RegisterRequest $request)
+    {
 
         $data = $request->all();
         $data['password'] = Hash::make($request->password);
 
         $user = $this->userRepository->store($data);
 
-       if ($request->has('image')) {
-           $file = $request->file('image');
-           $file_name = $file->move('uploads', $file->getClientOriginalName());
-       }
+        if ($request->hasFile('image')) {
 
-       $data['image'] = $file_name;
-       $data['user_id'] = $user->id;
+            $file = upload('image');
+            if (isset($file['name'])) {
+                $data['image'] = $file['name'];
+            }
+        }
 
-       $this->studentRepo->store($data);
+        $data['user_id'] = $user->id;
 
-       $credentials = $request->only('email', 'password');
-       if (Auth::attempt($credentials)) {
-           $data = $this->userRepository->find(Auth::id())->student;
-           $slug = $data->slug;
+        $this->studentRepo->store($data);
+
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            $data = $this->userRepository->find(Auth::id())->student;
+            $slug = $data->slug;
            $userId = $data->id;
-           return redirect()->route('show.students',[$userId, $slug]);
+           return redirect()->route('show-student',[$userId, $slug]);
        }
 
        return redirect('register')->with('warning','Something is incorrect')->withInput();
