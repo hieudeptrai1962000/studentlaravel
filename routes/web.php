@@ -25,13 +25,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::controller(SocialController::class)->group(function () {
     Route::get('/auth/redirect/{social}', 'login');
     Route::get('/callback/{social}', 'callback');
 });
-Auth::routes();
+
 Route::post('registerUser', [RegisterController::class, 'RegisterUser'])->name('register-user');
 Route::get('home', [HomeController::class, 'index'])->name('home');
+Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
 //    Route::group(['middleware' => ['role:admin role']], function () {  ---> Phân quyền bằng package permission Spatie
 //    });
