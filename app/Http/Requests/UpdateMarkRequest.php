@@ -3,8 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\DB;
-
 
 class UpdateMarkRequest extends FormRequest
 {
@@ -27,7 +25,7 @@ class UpdateMarkRequest extends FormRequest
     public function rules()
     {
         return [
-            'subject_id.*' => 'required|exists:subjects,id|numeric',
+            'subject_id.*' => 'required|exists:subjects,id',
             'mark.*' => 'required|numeric|between:0,10',
         ];
     }
