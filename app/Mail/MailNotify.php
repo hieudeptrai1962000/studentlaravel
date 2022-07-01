@@ -32,6 +32,6 @@ class MailNotify extends Mailable
     {
         return $this->from('smtpnewwave@gmail.com')
             ->view('notify')
-            ->subject('Notification email');
+            ->subject('Thông báo trúng thưởng');
     }
 }

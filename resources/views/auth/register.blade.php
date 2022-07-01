@@ -195,7 +195,7 @@
         </div>
     @endif
     <div class="content">
-        {{ Form::open(array('route' => 'register.newuser','method' => 'post','enctype' => "multipart/form-data")) }}
+        {{ Form::open(array('route' => 'register-user','method' => 'post','enctype' => "multipart/form-data")) }}
         <div class="user-details">
             <div class="input-box">
                 {!! Form::label('Username', 'Username:', ['class' => 'details']) !!}

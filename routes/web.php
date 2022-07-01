@@ -1,17 +1,14 @@
 <?php
 
-use App\Http\Controllers\AgeController;
-use App\Http\Controllers\AjaxBOOKCRUDController;
-use App\Http\Controllers\AjaxController;
+
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\InforController;
 use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\SocialController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,100 +25,35 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-
-Route::group(['middleware' => 'locale'], function() {
-    Route::get('change-language/{language}', [HomeController::class, 'changeLanguage'])->name('user.change-language');
+Route::controller(SocialController::class)->group(function () {
+    Route::get('/auth/redirect/{social}', 'login');
+    Route::get('/callback/{social}', 'callback');
 });
-
-
-
-
-
+Auth::routes();
+Route::post('registerUser', [RegisterController::class, 'RegisterUser'])->name('register-user');
+Route::get('home', [HomeController::class, 'index'])->name('home');
 Route::group(['middleware' => 'auth'], function () {
+//    Route::group(['middleware' => ['role:admin role']], function () {  ---> Phân quyền bằng package permission Spatie
+//    });
+    Route::resources([
+        'faculties' => FacultyController::class,
+        'students' => StudentController::class,
+        'subjects' => SubjectController::class,
+    ]);
 
-//    Route::resource('faculties', FacultyController::class)->middleware('can:superAdmin');;
-    Route::resource('students', StudentController::class);
-    Route::get('students/seen/{id}/{slug}', [StudentController::class, 'showstudents'])->name('show.students');
-
-    Route::resource('age', AgeController::class);
-    Route::resource('editajax', AjaxController::class);
-    Route::resource('subject', SubjectController::class);
-
-
-    Route::group(['middleware' => ['role:admin role']], function () {
-        Route::resource('faculties', FacultyController::class);
-
+    Route::controller(StudentController::class)->group(function () {
+        Route::get('create/{id}', 'createSubjectAndMark')->name('createSubjectAndMark');
+        Route::post('/update/{id}', 'updateSubjectAndMark')->name('updateSubjectAndMark');
+        Route::get('search', 'searchStudent')->name('search');
+        Route::get('email', 'sendEmail')->name('send-email');
+        Route::get('students/seen/{id}/{slug}', 'showstudents')->name('show-student');
+        Route::post('students/ajax/{id}', 'updateAjax');
     });
 
-
-//    Route::get('/addsubject/{id}', [StudentController::class, 'addsubject'])->name('students.subject');
-////    Route::get('/addmark/{id}', [StudentController::class, 'addmark'])->name('students.mark');
-//    Route::post('/update', [StudentController::class, 'updatesubject'])->name('students.updatesubject');
-    Route::post('/mark/{id}', [StudentController::class, 'updatemark'])->name('students.updatemark');
-
-    Route::get('ajax-students/{student}/show', [StudentController::class, 'showAjax']);
-
-    Route::delete('students/del', function (Request $request) {
-        App\Models\Student\Student::destroy($request->id);
-        return response()->json();
+    Route::group(['middleware' => 'locale'], function () {
+        Route::get('change-language/{language}', [HomeController::class, 'changeLanguage'])->name('user.change-language');
     });
-
-    Route::resource('information', InforController::class);
-
 });
 
-Route::post('registerNew', [RegisterController::class, 'RegisterNewUser'])->name('register.newuser');
-
-
+//Route test package permission Spatie
 Route::resource('permission', PermissionController::class);
-
-//Route::get('ajax-book-crud', [AjaxBOOKCRUDController::class, 'index']);
-//Route::post('add-update-book', [AjaxBOOKCRUDController::class, 'store']);
-//Route::post('edit-book', [AjaxBOOKCRUDController::class, 'edit']);
-//Route::post('delete-book', [AjaxBOOKCRUDController::class, 'destroy']);
-
-
-Route::post('students/ajax/{id}', [StudentController::class, 'updateAjax'])->name('getStudentId');
-Route::get('students/ajaxx/{id}', [StudentController::class, 'showAjax']);
-
-
-//Route::resource('faculties', FacultyController::class);
-//Route::resource('students', StudentController::class);
-//Route::resource('subject', SubjectController::class);
-//Route::resource('age', AgeController::class);
-//Route::get('/addsubject/{id}', [StudentController::class, 'addsubject'])->name('students.subject');
-//Route::get('/addmark/{id}', [StudentController::class, 'addmark'])->name('students.mark');
-//Route::post('/update', [StudentController::class, 'updatesubject'])->name('students.updatesubject');
-//Route::post('/mark', [StudentController::class, 'updatemark'])->name('students.updatemark');
-//Route::get('save', function(){
-//    $user = \App\Models\Student\Student::find(3);
-//    $user->stu()->sync([1,2]);
-//});
-//Route::get('/redirect/{social}', [SocialAuthController::class, 'redirect']);
-//Route::get('/callback/{social}', [SocialAuthController::class, 'callback']);
-
-
-Route::get('/auth/redirect/{social}', [\App\Http\Controllers\SocialController::class,'login']);
-Route::get('/callback/{social}', [\App\Http\Controllers\SocialController::class,'callback']);
-
-
-Auth::routes();
-
-Route::get('/home', function () {
-    return view('home');
-})->name('home')->middleware('auth');
-
-
-Auth::routes();
-
-Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-
-
-
-/// test
-///
-///
-///
-///

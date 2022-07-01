@@ -245,7 +245,7 @@
                 <div class="wrapper row">
                     <div class="preview col-md-6">
                         <div class="preview-pic tab-content">
-                            <div class="tab-pane active" id="pic-1"><img src="{{asset(''.$student->image)}}"/></div>
+                            <div class="tab-pane active" id="pic-1"><img src="{{asset(url_file( $student ->image))}}"></div>
                         </div>
                     </div>
                     <div class="details col-md-6">

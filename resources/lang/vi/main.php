@@ -13,4 +13,5 @@ return [
     'studentsList' => 'Danh sách sinh viên',
     'faculty' => 'Danh sách khoa',
     'subject' => 'Danh sách môn học',
+
 ];

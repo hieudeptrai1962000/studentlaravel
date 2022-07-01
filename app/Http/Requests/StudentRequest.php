@@ -25,14 +25,15 @@ class StudentRequest extends FormRequest
     public function rules()
     {
         return [
-            'full_name' => 'required',
-//            'email' => ['required',
-//                Rule::unique('students'),
-//                'email','max:100'
-//            ],
+            'full_name' => 'required|max:50',
+            'email' => ['required',
+                Rule::unique('students')->ignore($this->id),
+                'email','max:100'
+            ],
             'birthday' => 'required|date',
-            'gender' => 'required',
-            'phone_number' => 'required|size:10',
+            'gender' => 'required|boolean',
+            'phone_number' => 'required|numeric|digits_between:9,11',
+//            'image' => 'mimes:jpeg,jpg,png,gif|max:10000|nullable'
         ];
     }
 }

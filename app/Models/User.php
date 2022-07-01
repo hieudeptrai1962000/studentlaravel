@@ -37,7 +37,6 @@ class   User extends Authenticatable
             return false;
         }
 
-
         return $this->permission ==  $permission;
     }
 
@@ -45,6 +44,7 @@ class   User extends Authenticatable
     {
         return $this->hasOne(Student::class,'user_id');
     }
+
     public function sluggable()
     {
         return [

@@ -3,10 +3,8 @@
 namespace App\Models\Student;
 
 use App\Models\Faculty\Faculty;
-use App\Models\Studentsubject\Studentsubject;
+use App\Models\StudentSubject\StudentSubject;
 use App\Models\Subject\Subject;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -19,28 +17,22 @@ class Student extends Model
     protected $table = 'students';
     protected $fillable = ['full_name', 'email', 'birthday', 'gender','user_id','phone_number', 'image', 'faculty_id','slug'];
 
-    public function mark()
-    {
-        return $this->hasMany(Studentsubject::class,'student_id','id');
-    }
 
     public function faculty()
     {
         return $this->belongsTo(Faculty::class);
     }
 
-    public function stu()
+    public function students()
     {
 
         return $this->belongsToMany(Subject::class, 'student_subject')->withPivot('mark');
     }
 
-
-    public function age()
+    public function mark()
     {
-        return Carbon::parse($this->attributes['birthday'])->age;
+        return $this->hasMany(StudentSubject::class,'student_id','id');
     }
-
     public function sluggable()
     {
         return [

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\Users\UsersRepositoryInterface;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
@@ -25,7 +26,8 @@ class SocialController extends Controller
         $this->userRepo = $userRepo;
     }
 
-    public function callback($social)
+
+    public function callback($social, Request $request)
     {
         $user = Socialite::driver($social)->user();
         $userEmail = User::where('email', '=', $user->getEmail())->first();
@@ -36,7 +38,6 @@ class SocialController extends Controller
                     'username' => $user->getName(),
                     'email' => $user->getEmail(),
                     'password' => Hash::make($user->getId()),
-                    'providerID' => $user->getId(),
                 ]
             );
 
@@ -45,7 +46,6 @@ class SocialController extends Controller
                     'full_name' => $user->getName(),
                     'email' => $user->getEmail(),
                     'birthday' => Carbon::now(),
-                    'image' => $user->getAvatar(),
                     'user_id' => $newUser->id
                 ]
             );

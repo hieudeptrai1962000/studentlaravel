@@ -1,5 +1,4 @@
 @extends('adminlte::page')
-@extends('layouts.header')
 @section('content')
     <div class="container">
         <div class="row">
@@ -9,11 +8,10 @@
 
 
     <div class="well">
-
-        @if(isset($subject))
-        {!! Form::model($subject, ['route' => ['subject.update', $subject->id], 'method'=>'put', 'enctype'=>'multipart/form-data']) !!}
+    @if(isset($subject))
+        {!! Form::model($subject, ['route' => ['subjects.update', $subject->id], 'method'=>'put', 'enctype'=>'multipart/form-data']) !!}
     @else
-        {{ Form::open(array('route' => 'subject.store','method' => 'post','enctype' => "multipart/form-data")) }}
+         {!! Form::model($newSubject, ['route' => ['subjects.store'], 'method' => 'post','enctype' => "multipart/form-data"]) !!}
     @endif
 
     <fieldset>
@@ -49,6 +47,6 @@
     {{Form::submit('Submit', array('class' => 'btn btn-success mt-2'))}}
 
     {!! Form::close()  !!}
-    <a href="{{route('subject.index')}}" class="btn btn-success btn-add">Back</a>
+    <a href="{{route('subjects.index')}}" class="btn btn-success btn-add">Back</a>
 </div>
 @endsection

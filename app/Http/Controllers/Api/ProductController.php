@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Product as ProductResource;
 use App\Models\Student\Student;
 use App\Repositories\Faculty\FacultyRepositoryInterface;
 use App\Repositories\Student\StudentRepositoryInterface;
-use App\Repositories\Studentsubject\StudentsubjectRepositoryInterface;
 use App\Repositories\Subject\SubjectRepositoryInterface;
 use App\Repositories\Users\UsersRepositoryInterface;
 use Illuminate\Http\Request;
-use App\Http\Resources\Product as ProductResource;
 
 class ProductController extends Controller
 {
@@ -18,14 +17,12 @@ class ProductController extends Controller
     protected $studentRepo;
     protected $facultyRepo;
     protected $subjectRepo;
-    protected $markRepo;
     protected $userRepo;
 
     public function __construct(
         StudentRepositoryInterface        $studentRepo,
         FacultyRepositoryInterface        $facultyRepository,
         SubjectRepositoryInterface        $subjectRepository,
-        StudentsubjectRepositoryInterface $markRepo,
         UsersRepositoryInterface          $userRepo
 
     )
@@ -34,7 +31,6 @@ class ProductController extends Controller
         $this->studentRepo = $studentRepo;
         $this->facultyRepo = $facultyRepository;
         $this->subjectRepo = $subjectRepository;
-        $this->markRepo = $markRepo;
         $this->userRepo = $userRepo;
     }
 
@@ -45,7 +41,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $students = $this->studentRepo->getAllList();
+        $students = $this->studentRepo->getAll();
 
         return ProductResource::collection($students);
     }

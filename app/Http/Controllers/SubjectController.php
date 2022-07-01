@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SubjectRequest;
+use App\Models\Subject\Subject;
 use App\Repositories\Subject\SubjectRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -25,8 +26,8 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        $subject = $this->subjectRepo->paginate();
-        return view('subject.main', compact('subject'))->with('i');
+        $subjects = $this->subjectRepo->paginate();
+        return view('subject.index', compact('subjects'));
     }
 
     /**
@@ -38,7 +39,7 @@ class SubjectController extends Controller
     public function store(SubjectRequest $request)
     {
         $this->subjectRepo->store($request->all());
-        return redirect()->route('subject.index')->with('success', 'Successfully!');
+        return redirect()->route('subjects.index')->with('success', 'Successfully!');
     }
 
     /**
@@ -48,7 +49,8 @@ class SubjectController extends Controller
      */
     public function create()
     {
-        return view('subject.edit');
+        $newSubject = new Subject();
+        return view('subject.edit', compact('newSubject'));
     }
 
     /**
@@ -84,10 +86,10 @@ class SubjectController extends Controller
     public function update(SubjectRequest $request, $id)
     {
         if ($request->name == $this->subjectRepo->find($id)->name) {
-            return redirect()->route('subject.index')->with('warning', 'Nothing change dude !!!');
+            return redirect()->route('subjects.index')->with('warning', 'Không có gì thay đổi cả !!!');
         } else {
             $this->subjectRepo->find($id)->update($request->all());
-            return redirect()->route('subject.index')->with('success', 'Update faculty successfully !');
+            return redirect()->route('subjects.index')->with('success', 'Update faculty successfully !');
         }
     }
 
@@ -100,6 +102,6 @@ class SubjectController extends Controller
     public function destroy($id)
     {
         $this->subjectRepo->destroy($id);
-        return redirect()->route('subject.index')->with('success', 'Successfully!');
+        return redirect()->route('subjects.index')->with('success', 'Successfully!');
     }
 }
