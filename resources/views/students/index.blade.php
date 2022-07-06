@@ -1,6 +1,9 @@
 @extends('adminlte::page')
 @section('content')
+    <h3>Tên tài khoản: {{\Illuminate\Support\Facades\Auth::user()->username}}</h3>
+    <h3>ID tài khoản: {{\Illuminate\Support\Facades\Auth::id()}}</h3>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     <button type="button" class="btn btn-light" style="display:none">
         <a target="_blank" href="{{route('students.create')}}" class="btn btn-success"
            style="background-color: #343a40; border-color: white; margin-right: 10px">Add New</a>
@@ -9,7 +12,7 @@
         <a href="{{route('send-email')}}" class="btn btn-success"
            style="background-color: pink; border-color: white; margin-top: 20px">Send Mail to Bad Student</a>
     </button>
-
+    @include('layouts.flash_message')
     <div class="form-group" style="margin-top: 20px">
         {{Form::open(['method' => 'GET', 'route' => 'search', 'class' => 'form-inline'])}}
         <div class="form-group" style="margin-right: 20px">
@@ -65,8 +68,6 @@
             </div>
             {{Form::close()}}
         </div>
-
-            @include('layouts.flash_message')
 
         <div style="margin-top: 20px">
             <a href="{!! route('user.change-language', ['en']) !!}">{{ __('main.english') }}</a>
@@ -166,9 +167,9 @@
                                     {!! Form::label('name', 'Student name', []) !!}
                                     {!! Form::text('full_name', null, ['class' => 'form-control', 'id' => 'fullname_ajax']) !!}
                                 </div>
-                                <div class="form-group" style="display: none">
+                                <div class="form-group">
                                     {!! Form::label('email', 'Email', []) !!}
-                                    {!! Form::text('email', null, ['class' => 'form-control', 'id' => 'email_ajax']) !!}
+                                    {!! Form::text('email', null, ['class' => 'form-control', 'id' => 'email_ajax','readonly']) !!}
                                 </div>
                                 <div class="form-group">
                                     {!! Form::label('birthday', 'Birthday', []) !!}

@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage;
+
 
 
 class StudentController extends Controller
@@ -52,8 +52,10 @@ class StudentController extends Controller
         $subjects = $this->subjectRepo->getAll();
         $students = $this->studentRepo->paginate();
         $faculties = $this->facultyRepo->query()->pluck('name','id');
+        $username = Auth::user()->username;
 
-        return view('students.index', compact('students', 'subjects', 'faculties'));
+
+        return view('students.index', compact('students', 'subjects', 'faculties','username'));
     }
 
     /**
@@ -151,7 +153,6 @@ class StudentController extends Controller
 //        {
         if (Gate::allows('permission', 'admin')) {
             $student = $this->studentRepo->find($id);
-            $this->studentRepo->destroy($id);
             if (!empty($student->image)) {
                 unlink(public_path(url_file($student->image)));
                 $FileSystem = new Filesystem();
@@ -166,6 +167,8 @@ class StudentController extends Controller
                     }
                 }
             }
+            $this->studentRepo->destroy($id);
+
             return redirect()->route('students.index')->with('success', 'Successfully!');
         }
 
@@ -241,10 +244,8 @@ class StudentController extends Controller
             unset($data['image']);
         }
 
-
-
         $data['slug'] = str_slug($data['full_name']);
-
+        unset($data['email']);
         $this->studentRepo->find($request->id)->update($data);
         $student = $this->studentRepo->find($request->id);
         $student->image = asset(url_file($student->image));
