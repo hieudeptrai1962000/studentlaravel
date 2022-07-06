@@ -52,10 +52,8 @@ class StudentController extends Controller
         $subjects = $this->subjectRepo->getAll();
         $students = $this->studentRepo->paginate();
         $faculties = $this->facultyRepo->query()->pluck('name','id');
-        $username = Auth::user()->username;
 
-
-        return view('students.index', compact('students', 'subjects', 'faculties','username'));
+        return view('students.index', compact('students', 'subjects', 'faculties'));
     }
 
     /**
