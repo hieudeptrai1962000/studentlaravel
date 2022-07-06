@@ -11,10 +11,12 @@ use App\Repositories\Faculty\FacultyRepositoryInterface;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\Subject\SubjectRepositoryInterface;
 use App\Repositories\Users\UsersRepositoryInterface;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 
 class StudentController extends Controller
@@ -152,8 +154,17 @@ class StudentController extends Controller
             $this->studentRepo->destroy($id);
             if (!empty($student->image)) {
                 unlink(public_path(url_file($student->image)));
+                $FileSystem = new Filesystem();
+                if ($FileSystem->exists(public_path().'/uploads/'.date('Y/m/d/'))) {
+                    // Get all files in this directory.
+                    $files = $FileSystem->files(public_path().'/uploads/'.date('Y/m/d/'));
+                    // Check if directory is empty.
+                    if (empty($files)) {
+                        // Delete the directory.
+                        $FileSystem->deleteDirectory(public_path().'/uploads/'.date('Y/m/d/'));
+                    }
+                }
             }
-
             return redirect()->route('students.index')->with('success', 'Successfully!');
         }
 
@@ -216,9 +227,9 @@ class StudentController extends Controller
         $data = $request->all();
 
         if ($request->hasFile('image')) {
-            $old_image = $this->studentRepo->find($request->id);
-            if (!empty($old_image->image)) {
-                unlink(public_path(url_file($old_image->image)));
+            $old_record = $this->studentRepo->find($request->id);
+            if (!empty($old_record->image)) {
+                unlink(public_path(url_file($old_record->image)));
             }
 
             $file = upload('image');
@@ -228,6 +239,9 @@ class StudentController extends Controller
         } else {
             unset($data['image']);
         }
+
+
+
         $data['slug'] = str_slug($data['full_name']);
 
         $this->studentRepo->find($request->id)->update($data);
@@ -245,5 +259,6 @@ class StudentController extends Controller
             ->get();
         return view('students.show', compact('students'));
     }
+
 
 }

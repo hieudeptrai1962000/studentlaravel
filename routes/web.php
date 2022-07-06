@@ -45,7 +45,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::controller(StudentController::class)->group(function () {
         Route::get('create/{id}', 'createSubjectAndMark')->name('createSubjectAndMark');
-        Route::post('/update/{id}', 'updateSubjectAndMark')->name('updateSubjectAndMark');
+        Route::post('update/{id}', 'updateSubjectAndMark')->name('updateSubjectAndMark');
         Route::get('search', 'searchStudent')->name('search');
         Route::get('email', 'sendEmail')->name('send-email');
         Route::get('students/seen/{id}/{slug}', 'showstudents')->name('show-student');

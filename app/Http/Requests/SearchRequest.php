@@ -33,10 +33,4 @@ class SearchRequest extends FormRequest
             'learn_status' => 'in:all,finished,unfinished',
         ];
     }
-    public function messages()
-    {
-        return [
-            'subject_id.numeric' => 'Vui lòng nhập đúng yêu cầu và không chỉnh sửa gì cả',
-        ];
-    }
 }

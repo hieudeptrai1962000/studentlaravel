@@ -6,7 +6,7 @@ $(document).ready(function () {
         if (len - 1 < subject) {
             $("tbody").append('<tr>' + form + '</tr>');
         } else {
-            alert('stop boy')
+            alert('Đã đủ môn học')
         }
 
     });
