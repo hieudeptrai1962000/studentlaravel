@@ -269,8 +269,7 @@
                         </span>
                         </h5>
                         <div class="action">
-                            <a class="add-to-cart btn btn-default" href="{{ route('createSubjectAndMark', $student->id) }}">Update
-                                Subject and Mark</a>
+                            <a class="add-to-cart btn btn-default" href="{{ route('createSubjectAndMark', $student->id) }}">Update Subject and Mark</a>
                             <button class="like btn btn-default" type="button"><span class="fa fa-heart"></span>
                             </button>
                         </div>

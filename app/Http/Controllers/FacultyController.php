@@ -86,7 +86,7 @@ class FacultyController extends Controller
     public function update(FacultyRequest $request, $id)
     {
         if ($request->name == $this->facultyRepo->find($id)->name) {
-            return redirect()->route('faculties.index')->with('warning', 'Nothing change dude !!!');
+            return redirect()->route('faculties.index')->with('warning', 'Không có gì thay đổi cả !!!');
         } else {
             $this->facultyRepo->find($id)->update($request->all());
             return redirect()->route('faculties.index')->with('success', 'Update faculty successfully !');
