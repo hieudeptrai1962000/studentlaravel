@@ -155,13 +155,14 @@ class StudentController extends Controller
             if (!empty($student->image)) {
                 unlink(public_path(url_file($student->image)));
                 $FileSystem = new Filesystem();
-                if ($FileSystem->exists(public_path().'/uploads/'.date('Y/m/d/'))) {
+                $linkFolder = public_path().'/uploads/'.date('Y/m/d/');
+                if ($FileSystem->exists($linkFolder)) {
                     // Get all files in this directory.
-                    $files = $FileSystem->files(public_path().'/uploads/'.date('Y/m/d/'));
+                    $files = $FileSystem->files($linkFolder);
                     // Check if directory is empty.
                     if (empty($files)) {
                         // Delete the directory.
-                        $FileSystem->deleteDirectory(public_path().'/uploads/'.date('Y/m/d/'));
+                        $FileSystem->deleteDirectory($linkFolder);
                     }
                 }
             }
