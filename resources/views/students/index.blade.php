@@ -1,7 +1,5 @@
 @extends('adminlte::page')
 @section('content')
-    <h3>Tên tài khoản: {{\Illuminate\Support\Facades\Auth::user()->username}}</h3>
-    <h3>ID tài khoản: {{\Illuminate\Support\Facades\Auth::id()}}</h3>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <button type="button" class="btn btn-light" style="display:none">
@@ -92,9 +90,9 @@
             @foreach($students as $student)
                 <tr id="tr{{$student->id}}">
                     <td scope="col" id="{{'student_id_'.$student->id}}">{{$student->id}}</td>
-                    <td contenteditable id="{{'student_name_'.$student->id}}" scope="col">{{$student->full_name}}</td>
+                    <td id="{{'student_name_'.$student->id}}" scope="col">{{$student->full_name}}</td>
                     <td id="{{'student_email_'.$student->id}}" scope="col">{{$student->email}}</td>
-                    <td contenteditable id="{{'student_birthday_'.$student->id}}"
+                    <td id="{{'student_birthday_'.$student->id}}"
                         scope="col">{{$student->birthday}}</td>
 
 
@@ -209,5 +207,9 @@
             </div>
         </div>
         <script src="{{ asset('js/updateAjax.js') }}"></script>
-        @endsection
+        <h6 style="text-align: center">Tên tài khoản: {{\Illuminate\Support\Facades\Auth::user()->username}}</h6>
+        <h6 style="text-align: center">Email: {{\Illuminate\Support\Facades\Auth::user()->email}}</h6>
+        <h6 style="text-align: center">ID tài khoản: {{\Illuminate\Support\Facades\Auth::id()}}</h6>
+        <h6 style="text-align: center">{{\Carbon\Carbon::now()->format('l jS \\of F Y')}}</h6>
+@endsection
 
