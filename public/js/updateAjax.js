@@ -30,7 +30,6 @@ $(document).ready(function () {
             contentType: false,
             success: function (response) {
                 console.log(response);
-                alert('Cập nhật thành công')
                 if (response.gender == '1') {
                     var valueGender = 'Nữ';
                 } else {
