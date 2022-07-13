@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 
-
 class StudentController extends Controller
 {
     protected $studentRepo;
@@ -114,6 +113,7 @@ class StudentController extends Controller
     {
         $student = $this->studentRepo->find($id);
         $faculty = $this->facultyRepo->getAll();
+
         return view('students.edit', compact('student', 'faculty'));
     }
 
@@ -149,28 +149,35 @@ class StudentController extends Controller
 //        $user = auth()->user();
 //        if ($user->hasRole('admin role'))
 //        {
-        if (Gate::allows('permission', 'admin')) {
-            $student = $this->studentRepo->find($id);
-            if (!empty($student->image)) {
-                unlink(public_path(url_file($student->image)));
-                $FileSystem = new Filesystem();
-                $linkFolder = public_path().'/uploads/'.date('Y/m/d/');
-                if ($FileSystem->exists($linkFolder)) {
-                    // Get all files in this directory.
-                    $files = $FileSystem->files($linkFolder);
-                    // Check if directory is empty.
-                    if (empty($files)) {
-                        // Delete the directory.
-                        $FileSystem->deleteDirectory($linkFolder);
+        $data = $this->studentRepo->find($id);
+        if (Auth::user()->email == $data->email) {
+
+            return redirect()->route('students.index')->with('info', 'Email này đang được sử dụng');
+        } else {
+            if (Gate::allows('permission', 'admin')) {
+                $student = $this->studentRepo->find($id);
+                if (!empty($student->image)) {
+                    unlink(public_path(url_file($student->image)));
+                    $FileSystem = new Filesystem();
+                    $linkFolder = public_path() . '/uploads/' . date('Y/m/d/');
+                    if ($FileSystem->exists($linkFolder)) {
+                        // Get all files in this directory.
+                        $files = $FileSystem->files($linkFolder);
+                        // Check if directory is empty.
+                        if (empty($files)) {
+                            // Delete the directory.
+                            $FileSystem->deleteDirectory($linkFolder);
+                        }
                     }
                 }
+                $this->studentRepo->destroy($id);
+                $this->userRepo->destroy($student->user_id);
+
+                return redirect()->route('students.index')->with('success', 'Successfully!');
             }
-            $this->studentRepo->destroy($id);
 
-            return redirect()->route('students.index')->with('success', 'Successfully!');
+            return redirect()->route('students.index')->with('warning', 'Permission Denied');
         }
-
-        return redirect()->route('students.index')->with('warning', 'Permission Denied  ');
     }
 
     public function createSubjectAndMark($id)
@@ -220,6 +227,7 @@ class StudentController extends Controller
     {
         $students = $this->studentRepo->chickenStudent(Subject::all()->count());
         SendEmail::dispatch($students);
+
         return redirect()->back();
     }
 
@@ -228,27 +236,32 @@ class StudentController extends Controller
     {
         $data = $request->all();
 
-        if ($request->hasFile('image')) {
-            $old_record = $this->studentRepo->find($request->id);
-            if (!empty($old_record->image)) {
-                unlink(public_path(url_file($old_record->image)));
-            }
+        if ($request->validator->fails()) {
 
-            $file = upload('image');
-            if (isset($file['name'])) {
-                $data['image'] = $file['name'];
-            }
+            return response()->json('fails');
         } else {
-            unset($data['image']);
+            if ($request->hasFile('image')) {
+                $old_record = $this->studentRepo->find($request->id);
+                if (!empty($old_record->image)) {
+                    unlink(public_path(url_file($old_record->image)));
+                }
+
+                $file = upload('image');
+                if (isset($file['name'])) {
+                    $data['image'] = $file['name'];
+                }
+            } else {
+                unset($data['image']);
+            }
+
+            $data['slug'] = str_slug($data['full_name']);
+            unset($data['email']);
+            $this->studentRepo->find($request->id)->update($data);
+            $student = $this->studentRepo->find($request->id);
+            $student->image = asset(url_file($student->image));
+
+            return response()->json($student);
         }
-
-        $data['slug'] = str_slug($data['full_name']);
-        unset($data['email']);
-        $this->studentRepo->find($request->id)->update($data);
-        $student = $this->studentRepo->find($request->id);
-        $student->image = asset(url_file($student->image));
-
-        return response()->json($student);
     }
 
     public function showstudents($id, $slug)
@@ -257,6 +270,7 @@ class StudentController extends Controller
             ->where('id', $id)
             ->orWhere('slug', $slug)
             ->get();
+
         return view('students.show', compact('students'));
     }
 
