@@ -100,7 +100,7 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-       //
+        //
     }
 
     /**
@@ -158,17 +158,6 @@ class StudentController extends Controller
                 $student = $this->studentRepo->find($id);
                 if (!empty($student->image)) {
                     unlink(public_path(url_file($student->image)));
-                    $FileSystem = new Filesystem();
-                    $linkFolder = public_path() . '/uploads/' . date('Y/m/d/');
-                    if ($FileSystem->exists($linkFolder)) {
-                        // Get all files in this directory.
-                        $files = $FileSystem->files($linkFolder);
-                        // Check if directory is empty.
-                        if (empty($files)) {
-                            // Delete the directory.
-                            $FileSystem->deleteDirectory($linkFolder);
-                        }
-                    }
                 }
                 $this->studentRepo->destroy($id);
                 $this->userRepo->destroy($student->user_id);
