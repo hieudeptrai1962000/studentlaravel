@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\Users\UsersRepositoryInterface;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialController extends Controller
 {
-
     protected $studentRepo;
     protected $userRepo;
 
@@ -27,55 +23,38 @@ class SocialController extends Controller
     }
 
 
-    public function callback($social, Request $request)
+    public function callback($social)
     {
         $user = Socialite::driver($social)->user();
-        $userEmail = User::where('email', '=', $user->getEmail())->first();
+        $student = $this->userRepo->query()->where('email', $user->getEmail())->first();
 
-        if (empty($userEmail)) {
+        if (empty($student)) {
             $newUser = $this->userRepo->store(
                 [
                     'username' => $user->getName(),
                     'email' => $user->getEmail(),
-                    'password' => Hash::make($user->getId()),
+                    'password' => '123456789',
+                    'permission' =>'user',
+                    'providerID' => $user->getId(),
                 ]
             );
-
-            $this->studentRepo->store(
-                [
-                    'full_name' => $user->getName(),
-                    'email' => $user->getEmail(),
-                    'birthday' => Carbon::now(),
-                    'user_id' => $newUser->id
-                ]
-            );
-
-            $data = [
+            $newStudent = $this->studentRepo->store([
+                'full_name' => $user->getName(),
                 'email' => $user->getEmail(),
-                'password' => $user->getId(),
-            ];
+                'birthday' => Carbon::now(),
+                'user_id' => $newUser->id,
+            ]);
+            Auth::loginUsingId($newUser->id);
 
-            if (Auth::attempt($data)) {
-
-                return redirect()->route('students.index')->with('success', 'Successful!');
-            } else {
-
-                return redirect('login')->with('warning', 'Email hoặc mật khẩu đã được sử dụng')->withInput();
-            }
-        } else {
-            $data = [
-                'email' => $user->getEmail(),
-                'password' => $user->getId(),
-            ];
-
-            if (Auth::attempt($data)) {
-
-                return redirect()->route('students.index')->with('success', 'Successful!');
-            } else {
-
-                return redirect('login')->with('warning', 'Email hoặc mật khẩu đã được sử dụng')->withInput();
-            }
+            return redirect()->route('show-student',$newStudent->slug);
         }
+        $studentInfor = $this->studentRepo->query()->where('email',$user->getEmail())->first();
+        $this->userRepo->query()->find($student->id)->update([
+            'providerID' => $user->getId(),
+        ]);
+        Auth::loginUsingId($student->id);
+
+        return redirect()->route('show-student',$studentInfor->slug);
     }
 
     public function login($social)

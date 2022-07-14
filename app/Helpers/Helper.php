@@ -3,6 +3,13 @@ if (!function_exists('upload'))
 {
     function upload($file , $folder = '')
     {
+//        if ($request->hasFile('image')) {
+//            $file = upload('image');
+//
+//            if (isset($file['name'])) {
+//                $data['image'] = $file['name'];
+//            }
+//        }
         $baseFilename = public_path() . '/uploads/' . $_FILES[$file]['name'];
         $info = new SplFileInfo($baseFilename);
         $text = strtolower($info->getExtension());
@@ -19,16 +26,16 @@ if (!function_exists('upload'))
         {
             mkdir($path,0777,true);
         }
+
         move_uploaded_file($_FILES[$file]['tmp_name'], $path. $filename);
 
-        $data = [
+        return [
             'name' => $filename,
             'path_img' => 'uploads/'. date('Y/m/d/') .$filename,
         ];
-
-        return $data;
     }
 }
+
 if (!function_exists('url_file')) {
     function url_file($image,$folder = '')
     {

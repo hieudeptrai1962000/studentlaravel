@@ -8,7 +8,6 @@ $(document).ready(function () {
         } else {
             alert('Đã đủ môn học')
         }
-
     });
     $(document).on('click', '.delete', function () {
         $(this).parent().parent().remove();
@@ -19,7 +18,6 @@ $(document).ready(function () {
                 selected.push(select.value);
             }
         });
-
     });
 
     $(document).on('click', 'select', function () {
@@ -33,13 +31,13 @@ $(document).ready(function () {
         $('select > option').not(this).css('display', 'block');
         $("option").prop("disabled", false);
         for (var index in selected) {
-            $('option[value="' + selected[index] + '"]').css("display", "none");
+            $('option[value="' + selected[index] + '"]').hide();
         }
         $(this).parent().parent().find('td > i.remove-item').on('click', function () {
             var del = $(this).val();
             selected.splice(selected.indexOf(del.toString()), 1);
             for (var index in selected) {
-                $('option[value="' + selected[index] + '"]').css("display", "block");
+                $('option[value="' + selected[index] + '"]').show();
             }
         });
     });

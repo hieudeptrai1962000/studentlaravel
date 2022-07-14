@@ -36,10 +36,4 @@ class StudentRequest extends FormRequest
 //            'image' => 'mimes:jpeg,jpg,png,gif|max:10000|nullable'
         ];
     }
-    public $validator = null;
-
-    protected function failedValidation($validator)
-    {
-        $this->validator = $validator;
-    }
 }

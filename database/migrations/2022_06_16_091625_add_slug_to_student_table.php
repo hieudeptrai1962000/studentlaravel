@@ -14,7 +14,7 @@ class AddSlugToStudentTable extends Migration
     public function up()
     {
         Schema::table('students', function (Blueprint $table) {
-            $table->string('slug')->nullable();
+            $table->string('slug')->nullable()->unique();
         });
     }
 

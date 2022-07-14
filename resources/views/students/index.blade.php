@@ -117,8 +117,8 @@
                            href="{{ route('students.edit',$student->id ) }}">Edit</a>
                         <a class="btn btn-xs btn-default text-danger mx-1 shadow"
                            href="{{ route('createSubjectAndMark', $student->id) }}">Update Subject and Mark</a>
-                        <a class="btn btn-xs btn-default text-danger mx-1 shadow"
-                           href="{{ route('show-student',[$student->id, $student->slug] ) }}">Show</a>
+                        <a id="{{'student_link_'.$student->id}}" class="btn btn-xs btn-default text-danger mx-1 shadow"
+                           href="{{ route('show-student',$student->slug ) }}">Show</a>
 
                         <button type="button" onclick="ajaxfunction({{$student->id}})"
                                 class="btn btn-primary" data-id="{{$student->id}}">

@@ -7,7 +7,6 @@
                 <div class="table-title">
                     <div class="row">
                         <div class="col-xs-5">
-                            <h2>User <b>Management</b></h2>
                             @if ($errors->any())
                                 <div class="alert alert-danger">
                                     <ul>
@@ -19,8 +18,8 @@
                             @endif
                         </div>
                         <div class="col-xs-7">
-                            <button style="color: black" id="btn">Add More</button>
-                            <p id="count-subject">{{count($allSubject)}}</p>
+                            <button style="color: black;margin-left: 500px" id="btnaddmore">Add More</button>
+                            <p id="count-subject" style="display: none">{{count($allSubject)}}</p>
                         </div>
                     </div>
                 </div>
@@ -36,7 +35,7 @@
                     @foreach($subjectDones as $subjectDone)
                     <tr>
                         <td>
-                            <select class="form-select" name="subject_id[]" aria-label="Default select example">
+                            <select id="formtest" class="form-control" name="subject_id[]" aria-label="Default select example">
                                 <option value="select">Select subject...</option>
                                 <option value="{{ $subjectDone->id }}" {{ $subjectDone->id ?'selected' : ''}}>{{ $subjectDone->name}}</option>
                                 @foreach($allSubject as $subject)
@@ -47,15 +46,15 @@
                         <td>
                         {!! Form::text('mark[]', isset($subjectDone->pivot->mark) ? $subjectDone->pivot->mark : '', ['class' => 'form-control']) !!}
                         <td>
-                            <a href="#" class="settings" title="Settings" data-toggle="tooltip"><i class="material-icons">&#xE8B8;</i></a>
-                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE5C9;</i></a>
+                        <td>
+                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><h2 style="color: black">X</h2></a>
                         </td>
 
                     </tr>
                     @endforeach
                     <tr class="addform" style="display:none;">
                         <td>
-                            <select class="form-select" name="subject_id[]" aria-label="Default select example">
+                            <select class="form-control" name="subject_id[]" aria-label="Default select example">
                                 <option value="select">Select subject...</option>
                                 @foreach($allSubject as $subject)
                                     <option value="{{ $subject->id }}">{{ $subject->name}}</option>
@@ -66,8 +65,7 @@
                         {!! Form::text('mark[]', 0, ['class' => 'form-control']) !!}
                         <td>
                         <td>
-                            <a href="#" class="settings" title="Settings" data-toggle="tooltip"><i class="material-icons">&#xE8B8;</i></a>
-                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE5C9;</i></a>
+                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><h2 style="color: black">X</h2></a>
                         </td>
                     </tr>
                     </tbody>
@@ -77,6 +75,62 @@
             </div>
         </div>
     </div>
-    <script src="{{ asset('js/updateMark.js') }}"></script>
+    <script>
+        // $("#formtest option").each(function() {
+        //     $(this).siblings('[value="'+ this.value +'"]').remove();
+        // });
+        $(document).ready(function () {
+            form = $('tr.addform').html();
+            $("#btnaddmore").click(function () {
+                var len = $('tbody#formadd tr').length;
+                var subject = $('p#count-subject').html();
+
+                if (len - 1 < subject) {
+                    $("tbody").append('<tr>' + form + '</tr>');
+                } else {
+                    alert('Đã đủ môn học');
+                    $("#btnaddmore").hide();
+                }
+            });
+            $(document).on('click', '.delete', function () {
+                $(this).parent().parent().remove();
+                var $select = $("select");
+                var selected = [];
+                $.each($select, function (index, select) {
+                    if (select.value !== "") {
+                        selected.push(select.value);
+                        $("#btnaddmore").show();
+                    }
+                });
+            });
+
+            $(document).on('click', 'select', function () {
+
+                var $select = $("select");
+                var selected = [];
+                $.each($select, function (index, select) {
+                    if (select.value !== "") {
+                        selected.push(select.value);
+                    }
+                });
+                $('select > option').not(this).css('display', 'block');
+                $("option").prop("disabled", false);
+                for (var index in selected) {
+                    $('option[value="' + selected[index] + '"]').hide();
+                }
+                $(this).parent().parent().find('td > i.remove-item').on('click', function () {
+                    var del = $(this).val();
+                    selected.splice(selected.indexOf(del.toString()), 1);
+                    for (var index in selected) {
+                        $('option[value="' + selected[index] + '"]').show();
+                    }
+                });
+            });
+
+            $('#saveform').on('click', function () {
+                $('tr.addform').remove();
+            });
+        });
+    </script>
 @endsection
 

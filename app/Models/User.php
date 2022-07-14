@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Student\Student;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -19,7 +20,7 @@ class   User extends Authenticatable
      */
     protected $fillable = [
 
-        'username','email', 'password','permission','slug',
+        'username','email', 'password','permission','slug','providerID',
     ];
 
     /**
@@ -28,7 +29,7 @@ class   User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token','providerID',
+        'password', 'remember_token'
     ];
 
     public function hasDefinePrivilege($permission)
@@ -54,4 +55,14 @@ class   User extends Authenticatable
         ];
     }
 
+    /**
+     * Set the user's first name.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
 }
