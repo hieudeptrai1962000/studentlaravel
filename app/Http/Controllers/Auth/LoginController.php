@@ -66,8 +66,7 @@ class LoginController extends Controller
             // Authentication passed...
             $data = $this->userRepo->find(Auth::id())->student;
             $slug = $data->slug;
-            $userId = $data->id;
-            return redirect()->route('show-student',[$userId, $slug]);
+            return redirect()->route('show-student',$slug);
         }
 
         return redirect('login')->with('warning','Email or password is incorrect')->withInput();

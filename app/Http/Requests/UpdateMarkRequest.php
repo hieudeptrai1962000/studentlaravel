@@ -33,7 +33,8 @@ class UpdateMarkRequest extends FormRequest
     {
         return [
             'subject_id.*.exists' => 'Vui lòng nhập đúng yêu cầu và không chỉnh sửa gì cả',
-            'mark.*.required' => 'Không được để trống',
+            'mark.(*).required' => 's $1 :attribute Không được để trống',
+            'subject_id.*.required' => 's :attribute Không được để trống',
             'mark.*.between' => 'Vui lòng nhập điểm khoảng từ 1 đến 10',
         ];
     }

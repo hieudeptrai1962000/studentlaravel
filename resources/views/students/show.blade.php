@@ -234,10 +234,9 @@
 </head>
 
 <body>
-@if(!isset($students))
+@if(!isset($student))
     @include('errors.403')
 @else
-    @foreach($students as $student)
     <div class="container">
         <div class="card">
             <div class="container-fliud">
@@ -278,7 +277,6 @@
             </div>
         </div>
     </div>
-    @endforeach
 @endif
 
 

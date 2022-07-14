@@ -48,7 +48,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('update/{id}', 'updateSubjectAndMark')->name('updateSubjectAndMark');
         Route::get('search', 'searchStudent')->name('search');
         Route::get('email', 'sendEmail')->name('send-email');
-        Route::get('students/seen/{id}/{slug}', 'showstudents')->name('show-student');
+        Route::get('students/seen/{slug}', 'showstudents')->name('show-student');
         Route::post('students/ajax/{id}', 'updateAjax');
     });
 

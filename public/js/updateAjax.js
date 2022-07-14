@@ -30,6 +30,7 @@ $(document).ready(function () {
             contentType: false,
             success: function (response) {
                 console.log(response);
+                $("#student_link_" + modal_id).attr("href", window.location.href + '/' + 'seen' + '/' + response.slug);
                 if (response.gender == '1') {
                     var valueGender = 'Nữ';
                 } else {
@@ -41,11 +42,14 @@ $(document).ready(function () {
                 $('#student_gender_' + modal_id).html(valueGender);
                 $('#student_birthday_' + modal_id).html(response.birthday);
                 $('#new_image_' + modal_id).attr('src', response.image);
+
                 $('#form-ajax-crud').trigger("reset");
                 $('#exampleModal').modal('hide')
             },
-            error: function () {
-                alert('Cập nhật thất bại')
+            error: function (data) {
+                $.each(data , function (index, value){
+                    console.log(data);
+                });
             }
         })
     })
