@@ -76,9 +76,9 @@
         </div>
     </div>
     <script>
-        // $("#formtest option").each(function() {
-        //     $(this).siblings('[value="'+ this.value +'"]').remove();
-        // });
+        $("#formtest option").each(function() {
+            $(this).siblings('[value="'+ this.value +'"]').remove();
+        });
         $(document).ready(function () {
             form = $('tr.addform').html();
             $("#btnaddmore").click(function () {
