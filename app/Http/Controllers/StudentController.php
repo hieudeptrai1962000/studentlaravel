@@ -153,7 +153,9 @@ class StudentController extends Controller
         if (Auth::user()->email == $data->email) {
 
             return redirect()->route('students.index')->with('info', 'Email này đang được sử dụng');
-        } else {
+        }
+        else
+        {
             if (Gate::allows('permission', 'admin')) {
                 $student = $this->studentRepo->find($id);
                 if (!empty($student->image)) {
@@ -216,7 +218,7 @@ class StudentController extends Controller
         $students = $this->studentRepo->chickenStudent(Subject::all()->count());
         SendEmail::dispatch($students);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Successfully !');
     }
 
 
@@ -245,10 +247,7 @@ class StudentController extends Controller
 
     public function showstudents($slug)
     {
-        $student = $this->studentRepo->query()
-            ->where('slug', $slug)
-            ->first();
-
+        $student = $this->studentRepo->show($slug);
         return view('students.show', compact('student'));
     }
 

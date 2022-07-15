@@ -108,16 +108,16 @@
                     <td id="{{'student_phone_'.$student->id}}" scope="col">{{$student->phone_number}}</td>
                     <td id="{{'student_image_'.$student->id}}" scope="col"><img id="{{'new_image_'.$student->id}}"
                                                                                 src="{{asset(url_file( $student ->image))}}" alt="" class="img img-responsive"
-                                                                                width="50px" height="50px"></td>
+                                                                                width="50px"></td>
 
 
                     <td>
                         {!! Form::model($student, ['route' => ['students.destroy', $student->id], 'method' => 'DELETE', 'id' => 'FormDelete']) !!}
-                        <a style="display:none" class="btn btn-xs btn-default text-danger mx-1 shadow"
+                        <a style="display:none" class="btn btn-primary"
                            href="{{ route('students.edit',$student->id ) }}">Edit</a>
-                        <a class="btn btn-xs btn-default text-danger mx-1 shadow"
-                           href="{{ route('createSubjectAndMark', $student->id) }}">Update Subject and Mark</a>
-                        <a id="{{'student_link_'.$student->id}}" class="btn btn-xs btn-default text-danger mx-1 shadow"
+                        <a class="btn btn-primary"
+                           href="{{ route('createSubjectAndMark', $student->id) }}">Update Subject</a>
+                        <a id="{{'student_link_'.$student->id}}" class="btn btn-primary"
                            href="{{ route('show-student',$student->slug ) }}">Show</a>
 
                         <button type="button" onclick="ajaxfunction({{$student->id}})"
@@ -125,7 +125,7 @@
                             Ajax Edit
                         </button>
 {{--                        @can('delete articles per')--}}
-                            {!! Form::submit('Delete', ['class' => 'btn btn-xs btn-default text-danger mx-1 shadow', 'id'=>'btndel' ]) !!}
+                            {!! Form::submit('Delete', ['class' => 'btn btn-primary', 'id'=>'btndel' ]) !!}
                             {{--                            @else--}}
                             {{--                                {!! Form::submit('Delete Role', ['class' => 'btn btn-xs btn-default text-danger mx-1 shadow', 'id'=>'btndel' ]) !!}--}}
 {{--                        @endcan--}}

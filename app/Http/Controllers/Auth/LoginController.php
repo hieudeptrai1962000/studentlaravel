@@ -65,8 +65,8 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             // Authentication passed...
             $data = $this->userRepo->find(Auth::id())->student;
-            $slug = $data->slug;
-            return redirect()->route('show-student',$slug);
+
+            return redirect()->route('show-student',$data->slug);
         }
 
         return redirect('login')->with('warning','Email or password is incorrect')->withInput();

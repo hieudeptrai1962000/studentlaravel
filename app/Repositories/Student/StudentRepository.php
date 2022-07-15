@@ -99,6 +99,12 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
         return $students->get();
     }
 
+    public function show($slug)
+    {
+        return $this->model->query()
+            ->where('slug', $slug)
+            ->first();
+    }
 }
 
 ?>
