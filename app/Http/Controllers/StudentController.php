@@ -175,13 +175,13 @@ class StudentController extends Controller
         $marks = [];
         $subject_ids = [];
         $allSubject = ['' => '--Subject--'] + $this->subjectRepo->getAll()->pluck('name', 'id')->toArray();
-        $selectedSubjects = $this->studentRepo->find($id)->students()->get();
+        $student = $this->studentRepo->find($id);
+        $selectedSubjects = $student->students()->get();
 
         foreach ($selectedSubjects as $selectedSubject) {
             $marks[] = $selectedSubject->pivot->mark;
             $subject_ids[] = $selectedSubject->pivot->subject_id;
         }
-        $student = $this->studentRepo->find($id);
 
         return view('students.showMark', compact('allSubject', 'student', 'marks', 'subject_ids'));
     }
