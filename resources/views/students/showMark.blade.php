@@ -1,5 +1,12 @@
 @extends('adminlte::page')
 @section('content')
+    @php
+        if(!empty(old('subject_id'))) {
+            $subject_ids = old('subject_id');
+            $marks = old('mark');
+        }
+    @endphp
+    <a href="{{route('students.index')}}">Back to Main Page</a>
     <body>
     <div class="container">
         <div class="table">
@@ -32,40 +39,30 @@
                     </tr>
                     </thead>
                     <tbody id="formadd">
-                    @foreach($subjectDones as $subjectDone)
-                    <tr>
-                        <td>
-                            <select id="formtest" class="form-control" name="subject_id[]" aria-label="Default select example">
-                                <option value="select">Select subject...</option>
-                                <option value="{{ $subjectDone->id }}" {{ $subjectDone->id ?'selected' : ''}}>{{ $subjectDone->name}}</option>
-                                @foreach($allSubject as $subject)
-                                    <option value="{{ $subject->id }}" >{{ $subject->name}}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td>
-                        {!! Form::text('mark[]', isset($subjectDone->pivot->mark) ? $subjectDone->pivot->mark : '', ['class' => 'form-control']) !!}
-                        <td>
-                        <td>
-                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><h2 style="color: black">X</h2></a>
-                        </td>
-
-                    </tr>
+                    @foreach($marks as $key => $mark)
+                        <tr>
+                            <td>
+                                {!! Form::select('subject_id[]', $allSubject, (int)$subject_ids[$key], ['class' => 'form-control']) !!}
+                            </td>
+                            <td>
+                            {!! Form::number('mark[]', $mark, ['class' => 'form-control']) !!}
+                            <td>
+                            <td>
+                                <a href="#" class="delete" title="Delete" data-toggle="tooltip"><h2
+                                        style="color: black">X</h2></a>
+                            </td>
+                        </tr>
                     @endforeach
                     <tr class="addform" style="display:none;">
                         <td>
-                            <select class="form-control" name="subject_id[]" aria-label="Default select example">
-                                <option value="select">Select subject...</option>
-                                @foreach($allSubject as $subject)
-                                    <option value="{{ $subject->id }}">{{ $subject->name}}</option>
-                                @endforeach
-                            </select>
+                            {!! Form::select('subject_id[]', $allSubject, (int)$subject_ids, ['class' => 'form-control']) !!}
                         </td>
                         <td>
-                        {!! Form::text('mark[]', 0, ['class' => 'form-control']) !!}
+                        {!! Form::number('mark[]', 0, ['class' => 'form-control']) !!}
                         <td>
                         <td>
-                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><h2 style="color: black">X</h2></a>
+                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><h2 style="color: black">
+                                    X</h2></a>
                         </td>
                     </tr>
                     </tbody>
@@ -75,20 +72,17 @@
             </div>
         </div>
     </div>
-    <script>
-        $("#formtest option").each(function() {
-            $(this).siblings('[value="'+ this.value +'"]').remove();
-        });
+    {{--    <script src="{{ asset('js/updateMark') }}"></script>--}}
+    <script type="text/javascript">
         $(document).ready(function () {
             form = $('tr.addform').html();
             $("#btnaddmore").click(function () {
                 var len = $('tbody#formadd tr').length;
                 var subject = $('p#count-subject').html();
 
-                if (len - 1 < subject) {
+                if (len < subject) {
                     $("tbody").append('<tr>' + form + '</tr>');
                 } else {
-                    alert('Đã đủ môn học');
                     $("#btnaddmore").hide();
                 }
             });

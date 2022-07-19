@@ -116,7 +116,7 @@
                         <a style="display:none" class="btn btn-primary"
                            href="{{ route('students.edit',$student->id ) }}">Edit</a>
                         <a class="btn btn-primary"
-                           href="{{ route('createSubjectAndMark', $student->id) }}">Update Subject</a>
+                           href="{{ route('createSubjectAndMark', $student->id) }}">S&M</a>
                         <a id="{{'student_link_'.$student->id}}" class="btn btn-primary"
                            href="{{ route('show-student',$student->slug ) }}">Show</a>
 
@@ -125,7 +125,7 @@
                             Ajax Edit
                         </button>
 {{--                        @can('delete articles per')--}}
-                            {!! Form::submit('Delete', ['class' => 'btn btn-primary', 'id'=>'btndel' ]) !!}
+                            {!! Form::submit('Delete', ['class' => 'btn btn-primary', 'id'=>'btndel', 'onClick' => "return confirm('Are you sure?')" ]) !!}
                             {{--                            @else--}}
                             {{--                                {!! Form::submit('Delete Role', ['class' => 'btn btn-xs btn-default text-danger mx-1 shadow', 'id'=>'btndel' ]) !!}--}}
 {{--                        @endcan--}}
@@ -212,4 +212,3 @@
         <h6 style="text-align: center">ID tài khoản: {{\Illuminate\Support\Facades\Auth::id()}}</h6>
         <h6 style="text-align: center">{{\Carbon\Carbon::now()->format('l jS \\of F Y')}}</h6>
 @endsection
-
