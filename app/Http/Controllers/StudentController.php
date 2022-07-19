@@ -49,7 +49,7 @@ class StudentController extends Controller
     {
         $subjects = $this->subjectRepo->getAll();
         $students = $this->studentRepo->paginate();
-        $faculties = $this->facultyRepo->query()->pluck('name','id');
+        $faculties = $this->facultyRepo->query()->pluck('name', 'id');
 
         return view('students.index', compact('students', 'subjects', 'faculties'));
     }
@@ -92,17 +92,6 @@ class StudentController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param int $id
@@ -114,27 +103,6 @@ class StudentController extends Controller
         $faculty = $this->facultyRepo->getAll();
 
         return view('students.edit', compact('student', 'faculty'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return Response
-     */
-    public function update(StudentRequest $request, $id)
-    {
-        $data = $request->all();
-        if ($request->has('image')) {
-            $file = $request->file('image');
-            $destinationPath = 'uploads';
-            $file_name = $file->move($destinationPath, time() . $file->getClientOriginalName());
-        }
-        $data['image'] = $file_name;
-        $this->studentRepo->find($id)->update($data);
-
-        return redirect()->route('students.index')->with('success', 'Successful!');
     }
 
     /**
@@ -152,9 +120,7 @@ class StudentController extends Controller
         if (Auth::user()->email == $data->email) {
 
             return redirect()->route('students.index')->with('info', 'Email này đang được sử dụng');
-        }
-        else
-        {
+        } else {
             if (Gate::allows('permission', 'admin')) {
                 $student = $this->studentRepo->find($id);
                 if (!empty($student->image)) {
@@ -175,13 +141,13 @@ class StudentController extends Controller
         $marks = [];
         $subject_ids = [];
         $allSubject = ['' => '--Subject--'] + $this->subjectRepo->getAll()->pluck('name', 'id')->toArray();
-        $selectedSubjects = $this->studentRepo->find($id)->students()->get();
+        $student = $this->studentRepo->find($id);
+        $selectedSubjects = $student->students()->get();
 
         foreach ($selectedSubjects as $selectedSubject) {
             $marks[] = $selectedSubject->pivot->mark;
             $subject_ids[] = $selectedSubject->pivot->subject_id;
         }
-        $student = $this->studentRepo->find($id);
 
         return view('students.showMark', compact('allSubject', 'student', 'marks', 'subject_ids'));
     }
@@ -205,9 +171,9 @@ class StudentController extends Controller
 
             return redirect()->route('students.index')->with('success', 'Successfully !');
         }
-            $this->studentRepo->find($id)->students()->detach();
+        $this->studentRepo->find($id)->students()->detach();
 
-            return redirect()->route('students.index');
+        return redirect()->route('students.index');
     }
 
     public function searchStudent(SearchRequest $request)
@@ -226,7 +192,6 @@ class StudentController extends Controller
 
         return redirect()->back()->with('success', 'Successfully !');
     }
-
 
     public function updateAjax(StudentRequest $request)
     {
@@ -251,10 +216,42 @@ class StudentController extends Controller
         return response()->json($student);
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     */
+    public function update(StudentRequest $request, $id)
+    {
+        $data = $request->all();
+        if ($request->has('image')) {
+            $file = $request->file('image');
+            $destinationPath = 'uploads';
+            $file_name = $file->move($destinationPath, time() . $file->getClientOriginalName());
+        }
+        $data['image'] = $file_name;
+        $this->studentRepo->find($id)->update($data);
+
+        return redirect()->route('students.index')->with('success', 'Successful!');
+    }
+
     public function showstudents($slug)
     {
         $student = $this->studentRepo->show($slug);
         return view('students.show', compact('student'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return Response
+     */
+    public function show($id)
+    {
+        //
     }
 
 
