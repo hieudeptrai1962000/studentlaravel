@@ -11,6 +11,7 @@ use App\Repositories\Subject\SubjectRepositoryInterface;
 use App\Repositories\Users\UsersRepositoryInterface;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
@@ -56,13 +57,20 @@ class RegisterController extends Controller
 
     public function RegisterUser(RegisterRequest $request)
     {
-        $data = $request->all();
-        $user = $this->userRepository->store($data);
-        $data['image'] = upload('image')['name'];
-        $data['user_id'] = $user->id;
-        $student = $this->studentRepo->store($data);
-        Auth::loginUsingId($user->id);
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $user = $this->userRepository->store($data);
+            $data['image'] = upload('image')['name'];
+            $data['user_id'] = $user->id;
+            $student = $this->studentRepo->store($data);
+            Auth::loginUsingId($user->id);
+            DB::commit();
 
-        return redirect()->route('show-student',$student->slug);
+            return redirect()->route('show-student',$student->slug);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new \Exception($e->getMessage());
+        }
    }
 }

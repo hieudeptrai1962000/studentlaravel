@@ -1,12 +1,13 @@
 $(document).ready(function () {
     form = $('tr.addform').html();
-    $("#btn").click(function () {
+    $("#btnaddmore").click(function () {
         var len = $('tbody#formadd tr').length;
         var subject = $('p#count-subject').html();
-        if (len - 1 < subject) {
+
+        if (len < subject) {
             $("tbody").append('<tr>' + form + '</tr>');
         } else {
-            alert('Đã đủ môn học')
+            $("#btnaddmore").hide();
         }
     });
     $(document).on('click', '.delete', function () {
@@ -16,11 +17,13 @@ $(document).ready(function () {
         $.each($select, function (index, select) {
             if (select.value !== "") {
                 selected.push(select.value);
+                $("#btnaddmore").show();
             }
         });
     });
 
     $(document).on('click', 'select', function () {
+
         var $select = $("select");
         var selected = [];
         $.each($select, function (index, select) {
@@ -45,4 +48,4 @@ $(document).ready(function () {
     $('#saveform').on('click', function () {
         $('tr.addform').remove();
     });
-});
+});q

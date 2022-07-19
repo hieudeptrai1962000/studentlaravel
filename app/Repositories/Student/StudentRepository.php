@@ -101,7 +101,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 
     public function show($slug)
     {
-        return $this->model->query()
+        return $this->model
             ->where('slug', $slug)
             ->first();
     }

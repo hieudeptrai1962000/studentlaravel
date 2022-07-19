@@ -11,7 +11,6 @@ use App\Repositories\Faculty\FacultyRepositoryInterface;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\Subject\SubjectRepositoryInterface;
 use App\Repositories\Users\UsersRepositoryInterface;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -173,11 +172,18 @@ class StudentController extends Controller
 
     public function createSubjectAndMark($id)
     {
-        $student = $this->studentRepo->find($id);
-        $subjectDones = $student->students;
-        $allSubject = $this->subjectRepo->getAll();
+        $marks = [];
+        $subject_ids = [];
+        $allSubject = ['' => '--Subject--'] + $this->subjectRepo->getAll()->pluck('name', 'id')->toArray();
+        $selectedSubjects = $this->studentRepo->find($id)->students()->get();
 
-        return view('students.showMark', compact('subjectDones', 'allSubject', 'student'));
+        foreach ($selectedSubjects as $selectedSubject) {
+            $marks[] = $selectedSubject->pivot->mark;
+            $subject_ids[] = $selectedSubject->pivot->subject_id;
+        }
+        $student = $this->studentRepo->find($id);
+
+        return view('students.showMark', compact('allSubject', 'student', 'marks', 'subject_ids'));
     }
 
     public function updateSubjectAndMark(UpdateMarkRequest $request, $id)
