@@ -25,12 +25,14 @@
                             @endif
                         </div>
                         <div class="col-xs-7">
-                            <button style="color: black;margin-left: 500px" id="btnaddmore">Add More</button>
+                            <button class="btn btn-success" style="color: black;margin-left: 500px" id="btnaddmore">Add
+                                More
+                            </button>
                             <p id="count-subject" style="display: none">{{count($allSubject)}}</p>
                         </div>
                     </div>
                 </div>
-                {{ Form::open(array('route' => ['updateSubjectAndMark', $student->id],'method' => 'post','enctype' => "multipart/form-data")) }}
+                {{ Form::open(array('route' => ['updateSubjectAndMark', $student->id],'method' => 'post','enctype' => "multipart/form-data", 'id' => 'myForm')) }}
                 <table class="table table-striped table-hover">
                     <thead>
                     <tr>
@@ -45,7 +47,7 @@
                                 {!! Form::select('subject_id[]', $allSubject, (int)$subject_ids[$key], ['class' => 'form-control']) !!}
                             </td>
                             <td>
-                            {!! Form::number('mark[]', $mark, ['class' => 'form-control']) !!}
+                            {!! Form::text('mark[]', $mark, ['class' => 'form-control']) !!}
                             <td>
                             <td>
                                 <a href="#" class="delete" title="Delete" data-toggle="tooltip"><h2
@@ -58,7 +60,7 @@
                             {!! Form::select('subject_id[]', $allSubject, (int)$subject_ids, ['class' => 'form-control']) !!}
                         </td>
                         <td>
-                        {!! Form::number('mark[]', 0, ['class' => 'form-control']) !!}
+                        {!! Form::text('mark[]', 0, ['class' => 'form-control']) !!}
                         <td>
                         <td>
                             <a href="#" class="delete" title="Delete" data-toggle="tooltip"><h2 style="color: black">
@@ -72,7 +74,6 @@
             </div>
         </div>
     </div>
-    {{--    <script src="{{ asset('js/updateMark') }}"></script>--}}
     <script type="text/javascript">
         $(document).ready(function () {
             form = $('tr.addform').html();
@@ -126,5 +127,7 @@
             });
         });
     </script>
+    <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
+    {!! JsValidator::formRequest(\App\Http\Requests\UpdateMarkRequest::class, 'form'); !!}
 @endsection
 
