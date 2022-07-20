@@ -179,7 +179,7 @@ class StudentController extends Controller
     public function searchStudent(SearchRequest $request)
     {
         $subjects = $this->subjectRepo->getAll();
-        $students = $this->studentRepo->search($request->all(), Subject::all()->count());
+        $students = $this->studentRepo->search($request->all(), $subjects->count());
         $faculties = $this->facultyRepo->query()->pluck('name', 'id');
 
         return view('students.index', compact('students', 'subjects', 'faculties'));
