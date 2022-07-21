@@ -80,9 +80,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-         Student::find($id)->update($request->all());
-
-        return redirect()->route('superproducts.index');
+        return $this->studentRepo->find($id)->update($request->all());
     }
 
     /**
@@ -93,7 +91,6 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-
         return  $this->studentRepo->destroy($id);
     }
 }
