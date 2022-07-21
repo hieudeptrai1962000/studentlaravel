@@ -185,7 +185,7 @@
 
                                 <div class="form-group">
                                     {!! Form::label('phone_number', 'Phonenumber', []) !!}
-                                    {!! Form::text('phone_number', null, ['class' => 'form-control', 'id' => 'phone_ajax']) !!}
+                                    {!! Form::number('phone_number', null, ['class' => 'form-control', 'id' => 'phone_ajax']) !!}
                                 </div>
                                 <div class="form-group">
                                     <div class="col-lg-10">
