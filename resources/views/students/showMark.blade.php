@@ -6,7 +6,7 @@
             $marks = old('mark');
         }
     @endphp
-    <a href="{{route('students.index')}}">Back to Main Page</a>
+    <a class="btn btn-outline-success" href="{{route('students.index')}}">Back to Main Page</a>
     <body>
     <div class="container">
         <div class="table">
@@ -25,7 +25,7 @@
                             @endif
                         </div>
                         <div class="col-xs-7">
-                            <button class="btn btn-success" style="color: black;margin-left: 500px" id="btnaddmore">Add
+                            <button class="btn btn-outline-success" style="margin-left: 500px" id="btnaddmore">Add
                                 More
                             </button>
                             <p id="count-subject" style="display: none">{{count($allSubject)}}</p>
@@ -50,26 +50,24 @@
                             {!! Form::text('mark[]', $mark, ['class' => 'form-control']) !!}
                             <td>
                             <td>
-                                <a href="#" class="delete" title="Delete" data-toggle="tooltip"><h2
-                                        style="color: black">X</h2></a>
+                                <a href="#" class="btn btn-outline-danger delete" title="Delete" data-toggle="tooltip">Delete</a>
                             </td>
                         </tr>
                     @endforeach
                     <tr class="addform" style="display:none;">
                         <td>
-                            {!! Form::select('subject_id[]', $allSubject, (int)$subject_ids, ['class' => 'form-control']) !!}
+                            {!! Form::select('subject_id[]', $allSubject, null, ['class' => 'form-control']) !!}
                         </td>
                         <td>
                         {!! Form::text('mark[]', 0, ['class' => 'form-control']) !!}
                         <td>
                         <td>
-                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><h2 style="color: black">
-                                    X</h2></a>
+                            <a href="#" class="btn btn-outline-danger delete" title="Delete" data-toggle="tooltip">Delete</a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
-                {{Form::submit('Save', ['class'=> 'btn btn-success','id'=>'saveform'])}}
+                {{Form::submit('Save', ['class'=> 'btn btn-outline-dark','id'=>'saveform'])}}
                 {!! Form::close()  !!}
             </div>
         </div>

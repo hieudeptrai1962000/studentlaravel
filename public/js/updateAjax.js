@@ -5,6 +5,8 @@ function ajaxfunction(id) {
     $('#email_ajax').val($('#student_email_' + id).html());
     $('#birthday_ajax').val($('#student_birthday_' + id).html());
     $('#phone_ajax').val($('#student_phone_' + id).html());
+    $('#faculty_ajax').val($('#student_faculty_' + id).html()).change();
+
 }
 
 $(document).ready(function () {
@@ -42,6 +44,7 @@ $(document).ready(function () {
                 $('#student_gender_' + modal_id).html(valueGender);
                 $('#student_birthday_' + modal_id).html(response.birthday);
                 $('#new_image_' + modal_id).attr('src', response.image);
+                $('#student_faculty_' + modal_id).html(response.faculty_id);
 
                 $('#form-ajax-crud').trigger("reset");
                 $('#exampleModal').modal('hide')
