@@ -57,7 +57,12 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function checkEmail($email)
     {
-        return $this->model->whereEmail($email)->firstOrFail();
+        return $this->model->whereEmail($email)->first();
+    }
+
+    public function query()
+    {
+        return $this->model->query();
     }
 }
 ?>
