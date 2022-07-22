@@ -44,6 +44,7 @@ class BaseRepository implements BaseRepositoryInterface
     public function destroy($id)
     {
         $models = $this->find($id);
+
         return $models->delete();
     }
 
@@ -52,6 +53,11 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model
             ->whereSlug($slug)
             ->firstOrFail();
+    }
+
+    public function checkEmail($email)
+    {
+        return $this->model->whereEmail($email)->firstOrFail();
     }
 }
 ?>
