@@ -13,11 +13,6 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
         parent::__construct($student);
     }
 
-    public function query()
-    {
-        return $this->model->query();
-    }
-
     public function search($data, $subjectCount)
     {
         $students = $this->model->with('students');

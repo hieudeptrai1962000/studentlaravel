@@ -12,10 +12,6 @@ class FacultyRepository extends BaseRepository implements FacultyRepositoryInter
         parent::__construct($faculty);
     }
 
-    public function query()
-    {
-        return $this->model->query();
-    }
 }
 
 ?>

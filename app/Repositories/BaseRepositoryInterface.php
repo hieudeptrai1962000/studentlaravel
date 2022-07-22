@@ -17,6 +17,12 @@ interface BaseRepositoryInterface
     public function destroy($id);
 
     public function paginate();
+
+    public function findBySlug($slug);
+
+    public function checkEmail($email);
+
+    public function query();
 }
 
 ?>

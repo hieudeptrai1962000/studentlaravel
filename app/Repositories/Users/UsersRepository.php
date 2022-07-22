@@ -8,9 +8,5 @@ class UsersRepository extends BaseRepository implements UsersRepositoryInterface
         parent::__construct($users);
     }
 
-    public function query()
-    {
-        return $this->model->query();
-    }
 }
 ?>
