@@ -26,7 +26,7 @@ class SocialController extends Controller
     public function callback($social)
     {
         $user = Socialite::driver($social)->user();
-        $student = $this->userRepo->query()->where('email', $user->getEmail())->first();
+        $student = $this->userRepo->query()->whereEmail($user->getEmail())->firstOrFail();
 
         if (empty($student)) {
             $newUser = $this->userRepo->store(
@@ -48,7 +48,7 @@ class SocialController extends Controller
 
             return redirect()->route('show-student',$newStudent->slug);
         }
-        $studentInfor = $this->studentRepo->query()->where('email',$user->getEmail())->first();
+        $studentInfor = $this->studentRepo->query()->whereEmail($user->getEmail())->firstOrFail();
         $this->userRepo->query()->find($student->id)->update([
             'providerID' => $user->getId(),
         ]);

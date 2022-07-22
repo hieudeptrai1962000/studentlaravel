@@ -239,7 +239,7 @@ class StudentController extends Controller
 
     public function showstudents($slug)
     {
-        $student = $this->studentRepo->findbyslug($slug);
+        $student = $this->studentRepo->findBySlug($slug);
         return view('students.show', compact('student'));
     }
 

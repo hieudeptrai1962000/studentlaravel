@@ -47,10 +47,10 @@ class BaseRepository implements BaseRepositoryInterface
         return $models->delete();
     }
 
-    public function findbyslug($slug)
+    public function findBySlug($slug)
     {
         return $this->model
-            ->where('slug', $slug)
+            ->whereSlug($slug)
             ->firstOrFail();
     }
 }
